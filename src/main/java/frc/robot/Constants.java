@@ -17,7 +17,33 @@ public final class Constants {
     public static final class kCANID {
         // All placeholder values
 
-        public static final int kGyro = 1;
+        public static final int kDriveMotor1 = 1;
+        public static final int kDriveMotor2 = 2;
+        public static final int kDriveMotor3 = 3;
+        public static final int kDriveMotor4 = 4;
+
+        public static final int kTurnMotor1 = 5;
+        public static final int kTurnMotor2 = 6;
+        public static final int kTurnMotor3 = 7;
+        public static final int kTurnMotor4 = 8;
+
+        public static final int kDriveEncoder1 = 9;
+        public static final int kDriveEncoder2 = 10;
+        public static final int kDriveEncoder3 = 11;
+        public static final int kDriveEncoder4 = 12;
+
+        public static final int kTurnEncoder1 = 13;
+        public static final int kTurnEncoder2 = 14;
+        public static final int kTurnEncoder3 = 15;
+        public static final int kTurnEncoder4 = 16;
+
+        public static final int kGyro = 17;
+
+    }
+
+    public static final class kRobot {
+        public static final double length = 0.6;
+        public static final double width = 0.6;
     }
 
     public static final class kDrive {
