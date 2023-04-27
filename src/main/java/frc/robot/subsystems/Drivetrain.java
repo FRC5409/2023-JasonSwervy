@@ -3,11 +3,14 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.sensors.WPI_Pigeon2;
 
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.kCANID;
+import frc.robot.Constants.kDrive;
 import frc.robot.Constants.kRobot;
 
 public class Drivetrain extends SubsystemBase {
@@ -53,14 +56,38 @@ public class Drivetrain extends SubsystemBase {
         
     }
 
-    @Override
-    public void periodic() {
-        // This method will be called once per scheduler run
+    public void updateOdometry() {
+        m_odometry.update(m_gyro.getRotation2d(),
+            new SwerveModulePosition[] {mod_frontLeft.getPosition(), mod_frontRight.getPosition(),mod_backLeft.getPosition(), mod_backRight.getPosition()});
+    }
+
+    /**
+     * Tele-op drive method
+     * 
+     * @param xSpeed forward/backward axis, relative to field
+     * @param ySpeed left/right axis, relative to field
+     * @param rotation angular rate
+     */
+    public void drive(double xSpeed, double ySpeed, double rotation) {
+
+        // Get swerve module desired states
+        SwerveModuleState[] swerveModuleStates = m_kinematics.toSwerveModuleStates(
+            ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rotation, m_gyro.getRotation2d()));
+        
+        // Limit speeds
+        SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, kDrive.kMaxDriveVelocity);
+
+        // Set swerve module desired states
+        mod_frontLeft.setDesiredState(swerveModuleStates[0]);
+        mod_frontRight.setDesiredState(swerveModuleStates[1]);
+        mod_backLeft.setDesiredState(swerveModuleStates[2]);
+        mod_backRight.setDesiredState(swerveModuleStates[3]);
+
     }
 
     @Override
-    public void simulationPeriodic() {
-        // This method will be called once per scheduler run during simulation
+    public void periodic() {
+        updateOdometry();
     }
     
 }
