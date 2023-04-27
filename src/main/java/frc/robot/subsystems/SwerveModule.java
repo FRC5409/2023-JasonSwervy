@@ -9,6 +9,8 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import frc.robot.Constants.kDrive;
@@ -54,7 +56,8 @@ public class SwerveModule {
 
         // PID Controllers
         m_drivePIDController = new PIDController(kDrive.kDriveP, kDrive.kDriveI, kDrive.kDriveD);
-        m_turnPIDController = new ProfiledPIDController(kDrive.kTurnP, kDrive.kTurnI, kDrive.kTurnD, new TrapezoidProfile.Constraints(kDrive.kMaxDriveAngularVelocity, kDrive.kMaxTurnAngularAcceleration));
+        m_turnPIDController = new ProfiledPIDController(kDrive.kTurnP, kDrive.kTurnI, kDrive.kTurnD,
+            new TrapezoidProfile.Constraints(kDrive.kMaxDriveAngularVelocity, kDrive.kMaxTurnAngularAcceleration));
         m_turnPIDController.enableContinuousInput(-Math.PI, Math.PI);
 
         // Feedforwards
@@ -62,6 +65,9 @@ public class SwerveModule {
         m_turnFF = new SimpleMotorFeedforward(kDrive.kTurnFFkS, kDrive.kTurnFFkV);
     }
 
+    /**
+     * Configure the drive and turn CANCoders.
+     */
     private void configEncoder() {
         enc_driveConfig.sensorCoefficient = kDrive.kEncoder.kDriveSensorCoefficient;
         enc_driveConfig.unitString = kDrive.kEncoder.kUnitString;
@@ -74,8 +80,41 @@ public class SwerveModule {
         enc_turn.configAllSettings(enc_turnConfig);
     }
 
-    // public SwerveModuleState getState() {
-         
-    // }
+    /**
+     * @return current state of the module
+     */
+    public SwerveModuleState getState() {
+        return new SwerveModuleState(enc_drive.getVelocity(), new Rotation2d(enc_turn.getPosition()));
+    }
+
+    /**
+     * @return current position of the module
+     */
+    public SwerveModulePosition getPosition() {
+        return new SwerveModulePosition(enc_drive.getPosition(), new Rotation2d(enc_turn.getPosition()));
+    }
+
+    /**
+     * Set desired state of the module.
+     * 
+     * @param desiredState desired state of the module
+     */
+    public void setDesiredState(SwerveModuleState desiredState) {
+
+        // Optimize reference state
+        SwerveModuleState optimizedState = SwerveModuleState.optimize(desiredState, new Rotation2d(enc_turn.getPosition()));
+
+        // Calculate drive output
+        final double driveOutput = m_drivePIDController.calculate(enc_drive.getPosition(), optimizedState.speedMetersPerSecond);
+        final double driveFF = m_driveFF.calculate(optimizedState.speedMetersPerSecond);
+
+        // Calculate turn output
+        final double turnOutput = m_turnPIDController.calculate(enc_turn.getPosition(), optimizedState.angle.getRadians());
+        final double turnFF = m_turnFF.calculate(m_turnPIDController.getSetpoint().velocity);
+
+        // Set motor voltage
+        mot_drive.setVoltage(driveOutput + driveFF);
+        mot_turn.setVoltage(turnOutput + turnFF);
+    }
     
 }
