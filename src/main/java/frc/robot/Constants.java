@@ -14,6 +14,11 @@ package frc.robot;
  */
 public final class Constants {
 
+    public static final class kControllers {
+        public static final int kPrimaryController                  = 0;
+        public static final int kSecondaryController                = 1;
+    }
+
     public static final class kCANID {
         // All placeholder values
 
