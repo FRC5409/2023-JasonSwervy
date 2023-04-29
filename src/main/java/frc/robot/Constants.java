@@ -53,16 +53,20 @@ public final class Constants {
 
     public static final class kDrive {
 
-        public static final double kWheelRadius                     = 0.0475;
+        public static final double kWheelRadius                     = 0.0475; // metres
         public static final double kWheelDiameter                   = 2 * kWheelRadius;
         public static final double kWheelCircumference              = Math.PI * kWheelDiameter;
 
-        public static final double kMaxDriveVelocity                = 4;
+        public static final double kMaxDriveVelocity                = 4; // metres per second
         public static final double kMaxDriveAngularVelocity         = Math.PI; // half rotation per second
         public static final double kMaxTurnAngularAcceleration      = 2 * Math.PI; // radius per second squared
 
         public static final int kDriveMotorCurrentLimit             = 40;
         public static final int kTurnMotorCurrentLimit              = 30;
+
+        public static final double kXSpeedDeadband                  = 0.2;
+        public static final double kYSpeedDeadband                  = 0.2;
+        public static final double kRotationDeadband                = 0.2;
 
         public static final class kEncoder {
             public static final double kEncoderCPR                  = 4096;
