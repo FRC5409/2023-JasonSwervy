@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.sensors.WPI_Pigeon2;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -49,11 +50,23 @@ public class Drivetrain extends SubsystemBase {
 
         // Sensors and location
         m_gyro = new WPI_Pigeon2(kCANID.kGyro);
-        m_gyro.reset();
+        zeroHeading();
         m_kinematics = new SwerveDriveKinematics(m_frontLeftLoc, m_frontRightLoc, m_backLeftLoc, m_backRightLoc);
         m_odometry = new SwerveDriveOdometry(m_kinematics, m_gyro.getRotation2d(),
             new SwerveModulePosition[] {mod_frontLeft.getPosition(), mod_frontRight.getPosition(),mod_backLeft.getPosition(), mod_backRight.getPosition()});
         
+    }
+
+    public void zeroHeading() {
+        m_gyro.reset();
+    }
+
+    public Rotation2d getRotation2d() {
+        return m_gyro.getRotation2d();
+    }
+
+    public double getHeading() {
+        return getRotation2d().getDegrees();
     }
 
     public void updateOdometry() {
@@ -83,6 +96,13 @@ public class Drivetrain extends SubsystemBase {
         mod_backLeft.setDesiredState(swerveModuleStates[2]);
         mod_backRight.setDesiredState(swerveModuleStates[3]);
 
+    }
+
+    public void stopMotors() {
+        mod_frontLeft.stopMotors();
+        mod_frontRight.stopMotors();
+        mod_backLeft.stopMotors();
+        mod_backRight.stopMotors();
     }
 
     @Override
