@@ -61,12 +61,15 @@ public final class Constants {
         public static final double kMaxDriveAngularVelocity         = Math.PI; // half rotation per second
         public static final double kMaxTurnAngularAcceleration      = 2 * Math.PI; // radius per second squared
 
+        public static final int kDriveMotorCurrentLimit             = 40;
+        public static final int kTurnMotorCurrentLimit              = 30;
+
         public static final class kEncoder {
             public static final double kEncoderCPR                  = 4096;
 
             public static final double kDriveSensorCoefficient      = kWheelCircumference / kEncoderCPR;
             public static final double kTurnSensorCoefficient       = 2 * Math.PI / kEncoderCPR;
-        public static final String kUnitString                      = "m";
+            public static final String kUnitString                      = "m";
         }
 
         // TODO: Must be tuned

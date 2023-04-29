@@ -4,6 +4,7 @@ import com.ctre.phoenix.sensors.CANCoderConfiguration;
 import com.ctre.phoenix.sensors.SensorTimeBase;
 import com.ctre.phoenix.sensors.WPI_CANCoder;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -41,11 +42,13 @@ public class SwerveModule {
     private final SimpleMotorFeedforward m_turnFF;
 
 
-    public SwerveModule(int driveMotorID, int turnMotorID, int driveEncoderID, int turnEncoderID) {
+    public SwerveModule(int driveMotorID, int turnMotorID, int driveEncoderID, int turnEncoderID,
+        boolean driveMotorInverted, boolean turnMotorInverted) {
 
         // Motors
         mot_drive = new CANSparkMax(driveMotorID, MotorType.kBrushless);
         mot_turn = new CANSparkMax(turnMotorID, MotorType.kBrushless);
+        configMotors(driveMotorInverted, turnMotorInverted);
 
         // Encoders
         enc_drive = new WPI_CANCoder(driveEncoderID);
@@ -66,6 +69,25 @@ public class SwerveModule {
     }
 
     /**
+     * Config the drive and turn motors.
+     * 
+     * - Set brake mode
+     * - Set inverted (if applicable)
+     * - Set current limit
+     */
+    private void configMotors(boolean driveMotorInverted, boolean turnMotorInverted) {
+        mot_drive.restoreFactoryDefaults();
+        mot_drive.setIdleMode(IdleMode.kBrake);
+        mot_drive.setInverted(driveMotorInverted);
+        mot_drive.setSmartCurrentLimit(kDrive.kDriveMotorCurrentLimit);
+
+        mot_turn.restoreFactoryDefaults();
+        mot_turn.setIdleMode(IdleMode.kBrake);
+        mot_turn.setInverted(turnMotorInverted);
+        mot_turn.setSmartCurrentLimit(kDrive.kTurnMotorCurrentLimit);
+    }
+
+    /**
      * Configure the drive and turn CANCoders.
      */
     private void configEncoder() {
@@ -78,6 +100,21 @@ public class SwerveModule {
         enc_turnConfig.unitString = kDrive.kEncoder.kUnitString;
         enc_turnConfig.sensorTimeBase = SensorTimeBase.PerSecond;
         enc_turn.configAllSettings(enc_turnConfig);
+
+        resetEncoders();
+    }
+
+    public void stopMotors() {
+        mot_drive.set(0);
+        mot_turn.set(0);
+    }
+
+    /**
+     * Set drive and turning encoder positions to zero.
+     */
+    public void resetEncoders() {
+        enc_drive.setPosition(0);
+        enc_turn.setPosition(0);
     }
 
     /**
@@ -100,6 +137,14 @@ public class SwerveModule {
      * @param desiredState desired state of the module
      */
     public void setDesiredState(SwerveModuleState desiredState) {
+
+        // If no velocity, don't set new module state.
+        // This will prevent the wheels from turning back to straight
+        // each time after moving.
+        if (Math.abs(desiredState.speedMetersPerSecond) < 0.001) {
+            stopMotors();
+            return;
+        }
 
         // Optimize reference state
         SwerveModuleState optimizedState = SwerveModuleState.optimize(desiredState, new Rotation2d(enc_turn.getPosition()));

@@ -36,10 +36,10 @@ public class Drivetrain extends SubsystemBase {
     public Drivetrain() {
 
         // Swerve modules
-        mod_frontLeft = new SwerveModule(kCANID.kDriveMotor1, kCANID.kTurnMotor1, kCANID.kDriveEncoder1, kCANID.kTurnEncoder1);
-        mod_frontRight = new SwerveModule(kCANID.kDriveMotor2, kCANID.kTurnMotor2, kCANID.kDriveEncoder2, kCANID.kTurnEncoder2);
-        mod_backLeft = new SwerveModule(kCANID.kDriveMotor3, kCANID.kTurnMotor3, kCANID.kDriveEncoder3, kCANID.kTurnEncoder3);
-        mod_backRight = new SwerveModule(kCANID.kDriveMotor4, kCANID.kTurnMotor4, kCANID.kDriveEncoder4, kCANID.kTurnEncoder4);
+        mod_frontLeft = new SwerveModule(kCANID.kDriveMotor1, kCANID.kTurnMotor1, kCANID.kDriveEncoder1, kCANID.kTurnEncoder1, true, true);
+        mod_frontRight = new SwerveModule(kCANID.kDriveMotor2, kCANID.kTurnMotor2, kCANID.kDriveEncoder2, kCANID.kTurnEncoder2, false, false);
+        mod_backLeft = new SwerveModule(kCANID.kDriveMotor3, kCANID.kTurnMotor3, kCANID.kDriveEncoder3, kCANID.kTurnEncoder3, true, true);
+        mod_backRight = new SwerveModule(kCANID.kDriveMotor4, kCANID.kTurnMotor4, kCANID.kDriveEncoder4, kCANID.kTurnEncoder4, false, false);
 
         // Swerve kinematic points
         m_frontLeftLoc = new Translation2d(kRobot.length / 2, kRobot.width / 2);
