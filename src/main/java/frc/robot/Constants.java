@@ -73,7 +73,7 @@ public final class Constants {
 
             public static final double kDriveSensorCoefficient      = kWheelCircumference / kEncoderCPR;
             public static final double kTurnSensorCoefficient       = 2 * Math.PI / kEncoderCPR;
-            public static final String kUnitString                      = "m";
+            public static final String kUnitString                  = "m";
         }
 
         // TODO: Must be tuned
