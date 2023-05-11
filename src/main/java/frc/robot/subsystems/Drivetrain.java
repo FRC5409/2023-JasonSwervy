@@ -9,6 +9,8 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.kCANID;
 import frc.robot.Constants.kDrive;
@@ -32,6 +34,10 @@ public class Drivetrain extends SubsystemBase {
     private final WPI_Pigeon2 m_gyro;
     private final SwerveDriveKinematics m_kinematics;
     private final SwerveDriveOdometry m_odometry;
+
+    // Shuffleboard
+    private boolean debugMode = true;
+    private ShuffleboardTab sb_drivetrainTab;
     
 
     public Drivetrain() {
@@ -54,6 +60,19 @@ public class Drivetrain extends SubsystemBase {
         m_kinematics = new SwerveDriveKinematics(m_frontLeftLoc, m_frontRightLoc, m_backLeftLoc, m_backRightLoc);
         m_odometry = new SwerveDriveOdometry(m_kinematics, m_gyro.getRotation2d(),
             new SwerveModulePosition[] {mod_frontLeft.getPosition(), mod_frontRight.getPosition(),mod_backLeft.getPosition(), mod_backRight.getPosition()});
+
+        // Shuffleboard
+        if (debugMode) {
+            sb_drivetrainTab = Shuffleboard.getTab("Drivetrain");
+            sb_drivetrainTab.addNumber("VEL Front left",    () -> mod_frontLeft.getState().speedMetersPerSecond)  .withPosition(1, 1);
+            sb_drivetrainTab.addNumber("VEL Front right",   () -> mod_frontRight.getState().speedMetersPerSecond) .withPosition(2, 1);
+            sb_drivetrainTab.addNumber("VEL Back left",     () -> mod_backLeft.getState().speedMetersPerSecond)   .withPosition(3, 1);
+            sb_drivetrainTab.addNumber("VEL Back right",    () -> mod_backRight.getState().speedMetersPerSecond)  .withPosition(4, 1);
+            sb_drivetrainTab.addNumber("ANGLE Front left",  () -> mod_frontLeft.getState().angle.getDegrees())    .withPosition(1, 1);
+            sb_drivetrainTab.addNumber("ANGLE Front right", () -> mod_frontRight.getState().angle.getDegrees())   .withPosition(2, 1);
+            sb_drivetrainTab.addNumber("ANGLE Back left",   () -> mod_backLeft.getState().angle.getDegrees())     .withPosition(3, 1);
+            sb_drivetrainTab.addNumber("ANGLE Back right",  () -> mod_backRight.getState().angle.getDegrees())    .withPosition(4, 1);
+        }
         
     }
 
