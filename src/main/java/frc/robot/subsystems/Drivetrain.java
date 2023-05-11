@@ -47,23 +47,24 @@ public class Drivetrain extends SubsystemBase {
     public Drivetrain() {
 
         // Swerve modules
-        mod_frontLeft = new SwerveModule(kCANID.kDriveMotor1, kCANID.kTurnMotor1, kCANID.kDriveEncoder1, kCANID.kTurnEncoder1, true, true);
-        mod_frontRight = new SwerveModule(kCANID.kDriveMotor2, kCANID.kTurnMotor2, kCANID.kDriveEncoder2, kCANID.kTurnEncoder2, false, false);
-        mod_backLeft = new SwerveModule(kCANID.kDriveMotor3, kCANID.kTurnMotor3, kCANID.kDriveEncoder3, kCANID.kTurnEncoder3, true, true);
-        mod_backRight = new SwerveModule(kCANID.kDriveMotor4, kCANID.kTurnMotor4, kCANID.kDriveEncoder4, kCANID.kTurnEncoder4, false, false);
+        mod_frontLeft   = new SwerveModule(kCANID.kDriveMotor1, kCANID.kTurnMotor1, kCANID.kDriveEncoder1, kCANID.kTurnEncoder1, true, true);
+        mod_frontRight  = new SwerveModule(kCANID.kDriveMotor2, kCANID.kTurnMotor2, kCANID.kDriveEncoder2, kCANID.kTurnEncoder2, false, false);
+        mod_backLeft    = new SwerveModule(kCANID.kDriveMotor3, kCANID.kTurnMotor3, kCANID.kDriveEncoder3, kCANID.kTurnEncoder3, true, true);
+        mod_backRight   = new SwerveModule(kCANID.kDriveMotor4, kCANID.kTurnMotor4, kCANID.kDriveEncoder4, kCANID.kTurnEncoder4, false, false);
 
         // Swerve kinematic points
-        m_frontLeftLoc = new Translation2d(kRobot.length / 2, kRobot.width / 2);
+        m_frontLeftLoc  = new Translation2d(kRobot.length / 2, kRobot.width / 2);
         m_frontRightLoc = new Translation2d(kRobot.length / 2, -kRobot.width / 2);
-        m_backLeftLoc = new Translation2d(-kRobot.length / 2, kRobot.width / 2);
-        m_backRightLoc = new Translation2d(-kRobot.length / 2, -kRobot.width / 2);
+        m_backLeftLoc   = new Translation2d(-kRobot.length / 2, kRobot.width / 2);
+        m_backRightLoc  = new Translation2d(-kRobot.length / 2, -kRobot.width / 2);
 
         // Sensors and location
-        m_gyro = new WPI_Pigeon2(kCANID.kGyro);
+        m_gyro          = new WPI_Pigeon2(kCANID.kGyro);
         zeroHeading();
-        m_kinematics = new SwerveDriveKinematics(m_frontLeftLoc, m_frontRightLoc, m_backLeftLoc, m_backRightLoc);
-        m_odometry = new SwerveDriveOdometry(m_kinematics, m_gyro.getRotation2d(),
-            new SwerveModulePosition[] {mod_frontLeft.getPosition(), mod_frontRight.getPosition(),mod_backLeft.getPosition(), mod_backRight.getPosition()});
+        m_kinematics    = new SwerveDriveKinematics(m_frontLeftLoc, m_frontRightLoc, m_backLeftLoc, m_backRightLoc);
+        m_odometry      = new SwerveDriveOdometry(m_kinematics, m_gyro.getRotation2d(),
+                            new SwerveModulePosition[] {mod_frontLeft.getPosition(), mod_frontRight.getPosition(), mod_backLeft.getPosition(), mod_backRight.getPosition()});
+        
         m_field = new Field2d();
 
         // Shuffleboard
@@ -122,6 +123,9 @@ public class Drivetrain extends SubsystemBase {
 
     }
 
+    /**
+     * Stop all motors.
+     */
     public void stopMotors() {
         mod_frontLeft.stopMotors();
         mod_frontRight.stopMotors();
