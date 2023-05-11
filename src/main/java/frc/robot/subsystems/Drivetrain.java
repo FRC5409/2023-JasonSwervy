@@ -11,6 +11,8 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.kCANID;
 import frc.robot.Constants.kDrive;
@@ -34,6 +36,8 @@ public class Drivetrain extends SubsystemBase {
     private final WPI_Pigeon2 m_gyro;
     private final SwerveDriveKinematics m_kinematics;
     private final SwerveDriveOdometry m_odometry;
+
+    private final Field2d m_field;
 
     // Shuffleboard
     private boolean debugMode = true;
@@ -60,6 +64,7 @@ public class Drivetrain extends SubsystemBase {
         m_kinematics = new SwerveDriveKinematics(m_frontLeftLoc, m_frontRightLoc, m_backLeftLoc, m_backRightLoc);
         m_odometry = new SwerveDriveOdometry(m_kinematics, m_gyro.getRotation2d(),
             new SwerveModulePosition[] {mod_frontLeft.getPosition(), mod_frontRight.getPosition(),mod_backLeft.getPosition(), mod_backRight.getPosition()});
+        m_field = new Field2d();
 
         // Shuffleboard
         if (debugMode) {
@@ -127,6 +132,9 @@ public class Drivetrain extends SubsystemBase {
     @Override
     public void periodic() {
         updateOdometry();
+
+        m_field.setRobotPose(m_odometry.getPoseMeters());
+        SmartDashboard.putData(m_field);
     }
     
 }
