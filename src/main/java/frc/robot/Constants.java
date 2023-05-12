@@ -87,7 +87,10 @@ public final class Constants {
             public static final double kTurnSensorCoefficient       = 2 * Math.PI / kCPR;
             public static final String kUnitString                  = "m";
 
-            public static final double kAbsoluteEncoderOffset       = 0.0; // TODO: Find this value
+            public static final double kAbsoluteEncoderOffset1      = 0.0; // TODO: Find this value
+            public static final double kAbsoluteEncoderOffset2      = 0.0; // TODO: Find this value
+            public static final double kAbsoluteEncoderOffset3      = 0.0; // TODO: Find this value
+            public static final double kAbsoluteEncoderOffset4      = 0.0; // TODO: Find this value
         }
 
         // TODO: Must be tuned

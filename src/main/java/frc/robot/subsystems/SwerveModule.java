@@ -46,7 +46,7 @@ public class SwerveModule {
 
 
     public SwerveModule(int driveMotorID, int turnMotorID, int driveEncoderID, int turnEncoderID,
-        int cancoderID, boolean driveMotorInverted, boolean turnMotorInverted) {
+        int cancoderID, double cancoderAbsoluteOffset, boolean driveMotorInverted, boolean turnMotorInverted) {
 
         // Motors
         mot_drive = new CANSparkMax(driveMotorID, MotorType.kBrushless);
@@ -58,7 +58,7 @@ public class SwerveModule {
         enc_turn = mot_turn.getEncoder();
         enc_cancoder = new WPI_CANCoder(cancoderID);
         m_cancoderConfiguration = new CANCoderConfiguration();
-        configEncoder();
+        configEncoder(cancoderAbsoluteOffset);
 
         // PID Controllers
         m_drivePIDController = new PIDController(kDrive.kDriveP, kDrive.kDriveI, kDrive.kDriveD);
@@ -93,13 +93,13 @@ public class SwerveModule {
     /**
      * Configure the drive and turn CANCoders.
      */
-    private void configEncoder() {
+    private void configEncoder(double cancoderAbsoluteOffset) {
         enc_drive.setVelocityConversionFactor(kRelativeEncoder.kDriveSensorCoefficient * 60);
         enc_drive.setPositionConversionFactor(kRelativeEncoder.kDriveSensorCoefficient * 60);
         enc_turn.setVelocityConversionFactor(kRelativeEncoder.kTurnSensorCoefficient * 60);
         enc_turn.setPositionConversionFactor(kRelativeEncoder.kTurnSensorCoefficient * 60);
         
-        m_cancoderConfiguration.magnetOffsetDegrees = kCANCoder.kAbsoluteEncoderOffset;
+        m_cancoderConfiguration.magnetOffsetDegrees = cancoderAbsoluteOffset;
         m_cancoderConfiguration.absoluteSensorRange = AbsoluteSensorRange.Signed_PlusMinus180;
         enc_cancoder.configAllSettings(m_cancoderConfiguration);
 
