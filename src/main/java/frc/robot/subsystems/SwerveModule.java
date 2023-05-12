@@ -116,7 +116,19 @@ public class SwerveModule {
      */
     public void resetEncoders() {
         enc_drive.setPosition(0);
-        enc_turn.setPosition(0);
+        enc_turn.setPosition(getAbsoluteTurnEncoderPosition());
+    }
+
+    /**
+     * Return the absolute turn encoder position in meters.
+     * 
+     * Equation:
+     * circumference * (angle / 360)
+     * 
+     * @return absolute turn encoder position
+     */
+    public double getAbsoluteTurnEncoderPosition() {
+        return kDrive.kWheelCircumference * (enc_cancoder.getAbsolutePosition() / 360);
     }
 
     /**
