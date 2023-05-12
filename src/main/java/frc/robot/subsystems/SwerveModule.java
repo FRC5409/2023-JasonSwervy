@@ -1,5 +1,8 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.sensors.AbsoluteSensorRange;
+import com.ctre.phoenix.sensors.CANCoderConfiguration;
+import com.ctre.phoenix.sensors.WPI_CANCoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
@@ -13,6 +16,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import frc.robot.Constants.kDrive;
+import frc.robot.Constants.kDrive.kCANCoder;
 import frc.robot.Constants.kDrive.kRelativeEncoder;
 
 /**
@@ -29,6 +33,8 @@ public class SwerveModule {
     // Encoders
     private final RelativeEncoder enc_drive;
     private final RelativeEncoder enc_turn;
+    private final WPI_CANCoder enc_cancoder;
+    private final CANCoderConfiguration m_cancoderConfiguration;
 
     // PID Controllers
     private final PIDController m_drivePIDController;
@@ -40,7 +46,7 @@ public class SwerveModule {
 
 
     public SwerveModule(int driveMotorID, int turnMotorID, int driveEncoderID, int turnEncoderID,
-        boolean driveMotorInverted, boolean turnMotorInverted) {
+        int cancoderID, boolean driveMotorInverted, boolean turnMotorInverted) {
 
         // Motors
         mot_drive = new CANSparkMax(driveMotorID, MotorType.kBrushless);
@@ -50,6 +56,8 @@ public class SwerveModule {
         // Encoders
         enc_drive = mot_drive.getEncoder();
         enc_turn = mot_turn.getEncoder();
+        enc_cancoder = new WPI_CANCoder(cancoderID);
+        m_cancoderConfiguration = new CANCoderConfiguration();
         configEncoder();
 
         // PID Controllers
@@ -90,6 +98,10 @@ public class SwerveModule {
         enc_drive.setPositionConversionFactor(kRelativeEncoder.kDriveSensorCoefficient * 60);
         enc_turn.setVelocityConversionFactor(kRelativeEncoder.kTurnSensorCoefficient * 60);
         enc_turn.setPositionConversionFactor(kRelativeEncoder.kTurnSensorCoefficient * 60);
+        
+        m_cancoderConfiguration.magnetOffsetDegrees = kCANCoder.kAbsoluteEncoderOffset;
+        m_cancoderConfiguration.absoluteSensorRange = AbsoluteSensorRange.Signed_PlusMinus180;
+        enc_cancoder.configAllSettings(m_cancoderConfiguration);
 
         resetEncoders();
     }

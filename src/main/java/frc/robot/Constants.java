@@ -42,7 +42,12 @@ public final class Constants {
         public static final int kTurnEncoder3                       = 15;
         public static final int kTurnEncoder4                       = 16;
 
-        public static final int kGyro                               = 17;
+        public static final int kCANCoder1                          = 17;
+        public static final int kCANCoder2                          = 18;
+        public static final int kCANCoder3                          = 19;
+        public static final int kCANCoder4                          = 20;
+
+        public static final int kGyro                               = 21;
 
     }
 
@@ -81,6 +86,8 @@ public final class Constants {
             public static final double kDriveSensorCoefficient      = kWheelCircumference / kCPR;
             public static final double kTurnSensorCoefficient       = 2 * Math.PI / kCPR;
             public static final String kUnitString                  = "m";
+
+            public static final double kAbsoluteEncoderOffset       = 0.0; // TODO: Find this value
         }
 
         // TODO: Must be tuned
