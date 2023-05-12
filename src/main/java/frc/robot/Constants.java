@@ -68,11 +68,18 @@ public final class Constants {
         public static final double kYSpeedDeadband                  = 0.2;
         public static final double kRotationDeadband                = 0.2;
 
-        public static final class kEncoder {
-            public static final double kEncoderCPR                  = 4096;
+        public static final class kRelativeEncoder {
+            public static final double kCPR                         = 42;
 
-            public static final double kDriveSensorCoefficient      = kWheelCircumference / kEncoderCPR;
-            public static final double kTurnSensorCoefficient       = 2 * Math.PI / kEncoderCPR;
+            public static final double kDriveSensorCoefficient      = kWheelCircumference / kCPR;
+            public static final double kTurnSensorCoefficient       = 2 * Math.PI / kCPR;
+        }
+
+        public static final class kCANCoder {
+            public static final double kCPR                         = 4096;
+
+            public static final double kDriveSensorCoefficient      = kWheelCircumference / kCPR;
+            public static final double kTurnSensorCoefficient       = 2 * Math.PI / kCPR;
             public static final String kUnitString                  = "m";
         }
 

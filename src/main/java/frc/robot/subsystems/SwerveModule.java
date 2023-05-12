@@ -1,11 +1,9 @@
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.sensors.CANCoderConfiguration;
-import com.ctre.phoenix.sensors.SensorTimeBase;
-import com.ctre.phoenix.sensors.WPI_CANCoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.RelativeEncoder;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -15,6 +13,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import frc.robot.Constants.kDrive;
+import frc.robot.Constants.kDrive.kRelativeEncoder;
 
 /**
  * SDS MK4i Swerve Module
@@ -28,10 +27,8 @@ public class SwerveModule {
     private final CANSparkMax mot_turn;
 
     // Encoders
-    private final WPI_CANCoder enc_drive;
-    private final WPI_CANCoder enc_turn;
-    private final CANCoderConfiguration enc_driveConfig;
-    private final CANCoderConfiguration enc_turnConfig;
+    private final RelativeEncoder enc_drive;
+    private final RelativeEncoder enc_turn;
 
     // PID Controllers
     private final PIDController m_drivePIDController;
@@ -51,10 +48,8 @@ public class SwerveModule {
         configMotors(driveMotorInverted, turnMotorInverted);
 
         // Encoders
-        enc_drive = new WPI_CANCoder(driveEncoderID);
-        enc_turn = new WPI_CANCoder(turnEncoderID);
-        enc_driveConfig = new CANCoderConfiguration();
-        enc_turnConfig = new CANCoderConfiguration();
+        enc_drive = mot_drive.getEncoder();
+        enc_turn = mot_turn.getEncoder();
         configEncoder();
 
         // PID Controllers
@@ -91,15 +86,10 @@ public class SwerveModule {
      * Configure the drive and turn CANCoders.
      */
     private void configEncoder() {
-        enc_driveConfig.sensorCoefficient = kDrive.kEncoder.kDriveSensorCoefficient;
-        enc_driveConfig.unitString = kDrive.kEncoder.kUnitString;
-        enc_driveConfig.sensorTimeBase = SensorTimeBase.PerSecond;
-        enc_drive.configAllSettings(enc_driveConfig);
-        
-        enc_turnConfig.sensorCoefficient = kDrive.kEncoder.kDriveSensorCoefficient;
-        enc_turnConfig.unitString = kDrive.kEncoder.kUnitString;
-        enc_turnConfig.sensorTimeBase = SensorTimeBase.PerSecond;
-        enc_turn.configAllSettings(enc_turnConfig);
+        enc_drive.setVelocityConversionFactor(kRelativeEncoder.kDriveSensorCoefficient * 60);
+        enc_drive.setPositionConversionFactor(kRelativeEncoder.kDriveSensorCoefficient * 60);
+        enc_turn.setVelocityConversionFactor(kRelativeEncoder.kTurnSensorCoefficient * 60);
+        enc_turn.setPositionConversionFactor(kRelativeEncoder.kTurnSensorCoefficient * 60);
 
         resetEncoders();
     }
