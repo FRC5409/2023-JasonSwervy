@@ -45,8 +45,9 @@ public class SwerveModule {
     private final SimpleMotorFeedforward m_turnFF;
 
 
-    public SwerveModule(int driveMotorID, int turnMotorID, int driveEncoderID, int turnEncoderID,
-        int cancoderID, double cancoderAbsoluteOffset, boolean driveMotorInverted, boolean turnMotorInverted) {
+    public SwerveModule(int driveMotorID, int turnMotorID,
+        int cancoderID, double cancoderAbsoluteOffset,
+        boolean driveMotorInverted, boolean turnMotorInverted) {
 
         // Motors
         mot_drive = new CANSparkMax(driveMotorID, MotorType.kBrushless);

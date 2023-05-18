@@ -48,10 +48,10 @@ public class Drivetrain extends SubsystemBase {
     public Drivetrain() {
 
         // Swerve modules
-        mod_frontLeft   = new SwerveModule(kCANID.kDriveMotor1, kCANID.kTurnMotor1, kCANID.kDriveEncoder1, kCANID.kTurnEncoder1, kCANID.kCANCoder1, kCANCoder.kAbsoluteEncoderOffset1, true, true);
-        mod_frontRight  = new SwerveModule(kCANID.kDriveMotor2, kCANID.kTurnMotor2, kCANID.kDriveEncoder2, kCANID.kTurnEncoder2, kCANID.kCANCoder2, kCANCoder.kAbsoluteEncoderOffset2, false, false);
-        mod_backLeft    = new SwerveModule(kCANID.kDriveMotor3, kCANID.kTurnMotor3, kCANID.kDriveEncoder3, kCANID.kTurnEncoder3, kCANID.kCANCoder3, kCANCoder.kAbsoluteEncoderOffset3, true, true);
-        mod_backRight   = new SwerveModule(kCANID.kDriveMotor4, kCANID.kTurnMotor4, kCANID.kDriveEncoder4, kCANID.kTurnEncoder4, kCANID.kCANCoder4, kCANCoder.kAbsoluteEncoderOffset4, false, false);
+        mod_frontRight  = new SwerveModule(kCANID.kDriveMotor2, kCANID.kTurnMotor2, kCANID.kCANCoder2, kCANCoder.kAbsoluteEncoderOffset2, false, false);
+        mod_frontLeft   = new SwerveModule(kCANID.kDriveMotor1, kCANID.kTurnMotor1, kCANID.kCANCoder1, kCANCoder.kAbsoluteEncoderOffset1, true, true);
+        mod_backLeft    = new SwerveModule(kCANID.kDriveMotor3, kCANID.kTurnMotor3, kCANID.kCANCoder3, kCANCoder.kAbsoluteEncoderOffset3, true, true);
+        mod_backRight   = new SwerveModule(kCANID.kDriveMotor4, kCANID.kTurnMotor4, kCANID.kCANCoder4, kCANCoder.kAbsoluteEncoderOffset4, false, false);
 
         // Swerve kinematic points
         m_frontLeftLoc  = new Translation2d(kRobot.length / 2, kRobot.width / 2);

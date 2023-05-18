@@ -32,16 +32,6 @@ public final class Constants {
         public static final int kTurnMotor3                         = 7;
         public static final int kTurnMotor4                         = 8;
 
-        public static final int kDriveEncoder1                      = 9;
-        public static final int kDriveEncoder2                      = 10;
-        public static final int kDriveEncoder3                      = 11;
-        public static final int kDriveEncoder4                      = 12;
-
-        public static final int kTurnEncoder1                       = 13;
-        public static final int kTurnEncoder2                       = 14;
-        public static final int kTurnEncoder3                       = 15;
-        public static final int kTurnEncoder4                       = 16;
-
         public static final int kCANCoder1                          = 17;
         public static final int kCANCoder2                          = 18;
         public static final int kCANCoder3                          = 19;
