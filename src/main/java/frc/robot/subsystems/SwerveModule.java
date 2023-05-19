@@ -4,9 +4,12 @@ import com.ctre.phoenix.sensors.AbsoluteSensorRange;
 import com.ctre.phoenix.sensors.CANCoderConfiguration;
 import com.ctre.phoenix.sensors.WPI_CANCoder;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.SparkMaxPIDController.AccelStrategy;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkMaxPIDController;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -37,12 +40,8 @@ public class SwerveModule {
     private final CANCoderConfiguration m_cancoderConfiguration;
 
     // PID Controllers
-    private final PIDController m_drivePIDController;
-    private final ProfiledPIDController m_turnPIDController;
-
-    // Feedforward
-    private final SimpleMotorFeedforward m_driveFF;
-    private final SimpleMotorFeedforward m_turnFF;
+    private final SparkMaxPIDController m_drivePIDController;
+    private final SparkMaxPIDController m_turnPIDController;
 
 
     public SwerveModule(int driveMotorID, int turnMotorID,
@@ -52,7 +51,6 @@ public class SwerveModule {
         // Motors
         mot_drive = new CANSparkMax(driveMotorID, MotorType.kBrushless);
         mot_turn = new CANSparkMax(turnMotorID, MotorType.kBrushless);
-        configMotors(driveMotorInverted, turnMotorInverted);
 
         // Encoders
         enc_drive = mot_drive.getEncoder();
@@ -62,14 +60,24 @@ public class SwerveModule {
         configEncoder(cancoderAbsoluteOffset);
 
         // PID Controllers
-        m_drivePIDController = new PIDController(kDrive.kDriveP, kDrive.kDriveI, kDrive.kDriveD);
-        m_turnPIDController = new ProfiledPIDController(kDrive.kTurnP, kDrive.kTurnI, kDrive.kTurnD,
-            new TrapezoidProfile.Constraints(kDrive.kMaxDriveAngularVelocity, kDrive.kMaxTurnAngularAcceleration));
-        m_turnPIDController.enableContinuousInput(-Math.PI, Math.PI);
+        // Drive
+        m_drivePIDController = mot_drive.getPIDController();
+        m_drivePIDController.setP(kDrive.kTurnP);
+        m_drivePIDController.setI(kDrive.kTurnI);
+        m_drivePIDController.setD(kDrive.kTurnD);
+        m_drivePIDController.setFF(kDrive.kDriveFF);
+        // Turn
+        m_turnPIDController = mot_turn.getPIDController();
+        m_turnPIDController.setP(kDrive.kTurnP);
+        m_turnPIDController.setI(kDrive.kTurnI);
+        m_turnPIDController.setD(kDrive.kTurnD);
+        m_turnPIDController.setFF(kDrive.kTurnFF);
+        m_turnPIDController.setSmartMotionMaxAccel(kDrive.kMaxTurnAngularAcceleration, 0);
+        m_turnPIDController.setPositionPIDWrappingEnabled(true);
+        m_turnPIDController.setPositionPIDWrappingMaxInput(Math.PI);
+        m_turnPIDController.setPositionPIDWrappingMinInput(-Math.PI);
 
-        // Feedforwards
-        m_driveFF = new SimpleMotorFeedforward(kDrive.kDriveFFkS, kDrive.kDriveFFkV);
-        m_turnFF = new SimpleMotorFeedforward(kDrive.kTurnFFkS, kDrive.kTurnFFkV);
+        configMotors(driveMotorInverted, turnMotorInverted);
     }
 
     /**
@@ -84,11 +92,13 @@ public class SwerveModule {
         mot_drive.setIdleMode(IdleMode.kBrake);
         mot_drive.setInverted(driveMotorInverted);
         mot_drive.setSmartCurrentLimit(kDrive.kDriveMotorCurrentLimit);
+        mot_drive.burnFlash();
 
         mot_turn.restoreFactoryDefaults();
         mot_turn.setIdleMode(IdleMode.kBrake);
         mot_turn.setInverted(turnMotorInverted);
         mot_turn.setSmartCurrentLimit(kDrive.kTurnMotorCurrentLimit);
+        mot_turn.burnFlash();
     }
 
     /**
@@ -164,17 +174,9 @@ public class SwerveModule {
         // Optimize reference state
         SwerveModuleState optimizedState = SwerveModuleState.optimize(desiredState, new Rotation2d(enc_turn.getPosition()));
 
-        // Calculate drive output
-        final double driveOutput = m_drivePIDController.calculate(enc_drive.getPosition(), optimizedState.speedMetersPerSecond);
-        final double driveFF = m_driveFF.calculate(optimizedState.speedMetersPerSecond);
-
-        // Calculate turn output
-        final double turnOutput = m_turnPIDController.calculate(enc_turn.getPosition(), optimizedState.angle.getRadians());
-        final double turnFF = m_turnFF.calculate(m_turnPIDController.getSetpoint().velocity);
-
-        // Set motor voltage
-        mot_drive.setVoltage(driveOutput + driveFF);
-        mot_turn.setVoltage(turnOutput + turnFF);
+        // Drive output
+        m_drivePIDController.setReference(optimizedState.speedMetersPerSecond, ControlType.kVelocity, 0);
+        m_turnPIDController.setReference(optimizedState.angle.getRadians(), ControlType.kVelocity, 0);
     }
     
 }

@@ -88,14 +88,12 @@ public final class Constants {
         public static final double kDriveP                          = 0;
         public static final double kDriveI                          = 0;
         public static final double kDriveD                          = 0;
-        public static final double kDriveFFkS                       = 0;
-        public static final double kDriveFFkV                       = 0;
+        public static final double kDriveFF                         = 0;
 
         public static final double kTurnP                           = 0;
         public static final double kTurnI                           = 0;
         public static final double kTurnD                           = 0;
-        public static final double kTurnFFkS                        = 0;
-        public static final double kTurnFFkV                        = 0;
+        public static final double kTurnFF                          = 0;
 
     }
 
