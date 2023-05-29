@@ -48,8 +48,8 @@ public class Drivetrain extends SubsystemBase {
     public Drivetrain() {
 
         // Swerve modules
-        mod_frontRight  = new SwerveModule(kCANID.kDriveMotor2, kCANID.kTurnMotor2, kCANID.kCANCoder2, kCANCoder.kAbsoluteEncoderOffset2, false, false);
         mod_frontLeft   = new SwerveModule(kCANID.kDriveMotor1, kCANID.kTurnMotor1, kCANID.kCANCoder1, kCANCoder.kAbsoluteEncoderOffset1, true, true);
+        mod_frontRight  = new SwerveModule(kCANID.kDriveMotor2, kCANID.kTurnMotor2, kCANID.kCANCoder2, kCANCoder.kAbsoluteEncoderOffset2, false, false);
         mod_backLeft    = new SwerveModule(kCANID.kDriveMotor3, kCANID.kTurnMotor3, kCANID.kCANCoder3, kCANCoder.kAbsoluteEncoderOffset3, true, true);
         mod_backRight   = new SwerveModule(kCANID.kDriveMotor4, kCANID.kTurnMotor4, kCANID.kCANCoder4, kCANCoder.kAbsoluteEncoderOffset4, false, false);
 

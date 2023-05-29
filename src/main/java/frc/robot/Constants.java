@@ -22,22 +22,22 @@ public final class Constants {
     public static final class kCANID {
         // All placeholder values
 
-        public static final int kDriveMotor1                        = 1;
-        public static final int kDriveMotor2                        = 2;
-        public static final int kDriveMotor3                        = 3;
-        public static final int kDriveMotor4                        = 4;
+        public static final int kDriveMotor1                        = 11;
+        public static final int kDriveMotor2                        = 9;
+        public static final int kDriveMotor3                        = 15;
+        public static final int kDriveMotor4                        = 18;
 
-        public static final int kTurnMotor1                         = 5;
-        public static final int kTurnMotor2                         = 6;
-        public static final int kTurnMotor3                         = 7;
-        public static final int kTurnMotor4                         = 8;
+        public static final int kTurnMotor1                         = 11;
+        public static final int kTurnMotor2                         = 8;
+        public static final int kTurnMotor3                         = 14;
+        public static final int kTurnMotor4                         = 17;
 
-        public static final int kCANCoder1                          = 17;
-        public static final int kCANCoder2                          = 18;
-        public static final int kCANCoder3                          = 19;
-        public static final int kCANCoder4                          = 20;
+        public static final int kCANCoder1                          = 13;
+        public static final int kCANCoder2                          = 10;
+        public static final int kCANCoder3                          = 16;
+        public static final int kCANCoder4                          = 19;
 
-        public static final int kGyro                               = 21;
+        public static final int kGyro                               = 3;
 
     }
 
