@@ -141,7 +141,7 @@ public class SwerveModule extends SubsystemBase {
      * @return absolute turn encoder position
      */
     public double getAbsoluteTurnEncoderPositionRadians() {
-        return getAbsoluteTurnEncoderPositionDegrees() * (Math.PI / 180);
+        return Math.toRadians(getAbsoluteTurnEncoderPositionDegrees());
     }
 
     /**
