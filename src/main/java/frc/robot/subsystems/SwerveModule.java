@@ -13,7 +13,9 @@ import com.revrobotics.SparkMaxPIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.kDrive;
+import frc.robot.Constants.kDrive.kCANCoder;
 import frc.robot.Constants.kDrive.kRelativeEncoder;
 
 /**
@@ -21,7 +23,7 @@ import frc.robot.Constants.kDrive.kRelativeEncoder;
  * NEO Pinions, L2
  * Product page: https://www.swervedrivespecialties.com/products/mk4i-swerve-module?variant=39598777303153
  */
-public class SwerveModule {
+public class SwerveModule extends SubsystemBase {
 
     // Motors
     private final CANSparkMax mot_drive;
@@ -51,27 +53,12 @@ public class SwerveModule {
         enc_turn = mot_turn.getEncoder();
         enc_cancoder = new WPI_CANCoder(cancoderID);
         m_cancoderConfiguration = new CANCoderConfiguration();
-        configEncoder(cancoderAbsoluteOffset);
 
         // PID Controllers
-        // Drive
         m_drivePIDController = mot_drive.getPIDController();
-        m_drivePIDController.setP(kDrive.kTurnP);
-        m_drivePIDController.setI(kDrive.kTurnI);
-        m_drivePIDController.setD(kDrive.kTurnD);
-        m_drivePIDController.setFF(kDrive.kDriveFF);
-        // Turn
         m_turnPIDController = mot_turn.getPIDController();
-        m_turnPIDController.setP(kDrive.kTurnP);
-        m_turnPIDController.setI(kDrive.kTurnI);
-        m_turnPIDController.setD(kDrive.kTurnD);
-        m_turnPIDController.setFF(kDrive.kTurnFF);
-        m_turnPIDController.setSmartMotionMaxAccel(kDrive.kMaxTurnAngularAcceleration, 0);
-        m_turnPIDController.setPositionPIDWrappingEnabled(true);
-        m_turnPIDController.setPositionPIDWrappingMaxInput(Math.PI);
-        m_turnPIDController.setPositionPIDWrappingMinInput(-Math.PI);
 
-        configMotors(driveMotorInverted, turnMotorInverted);
+        configMotorsAndEncoders(driveMotorInverted, turnMotorInverted, -cancoderAbsoluteOffset);
     }
 
     /**
@@ -81,17 +68,32 @@ public class SwerveModule {
      * - Set inverted (if applicable)
      * - Set current limit
      */
-    private void configMotors(boolean driveMotorInverted, boolean turnMotorInverted) {
+    private void configMotorsAndEncoders(boolean driveMotorInverted, boolean turnMotorInverted, double cancoderAbsoluteOffset) {
         mot_drive.restoreFactoryDefaults();
         mot_drive.setIdleMode(IdleMode.kBrake);
         mot_drive.setInverted(driveMotorInverted);
         mot_drive.setSmartCurrentLimit(kDrive.kDriveMotorCurrentLimit);
-        mot_drive.burnFlash();
+        m_drivePIDController.setP(kDrive.kDriveP);
+        m_drivePIDController.setI(kDrive.kDriveI);
+        m_drivePIDController.setD(kDrive.kDriveD);
+        m_drivePIDController.setFF(kDrive.kDriveFF);
 
         mot_turn.restoreFactoryDefaults();
         mot_turn.setIdleMode(IdleMode.kBrake);
         mot_turn.setInverted(turnMotorInverted);
         mot_turn.setSmartCurrentLimit(kDrive.kTurnMotorCurrentLimit);
+        m_turnPIDController.setP(kDrive.kTurnP);
+        m_turnPIDController.setI(kDrive.kTurnI);
+        m_turnPIDController.setD(kDrive.kTurnD);
+        m_turnPIDController.setFF(kDrive.kTurnFF);
+        m_turnPIDController.setSmartMotionMaxAccel(kDrive.kMaxTurnAngularAcceleration, 0);
+        m_turnPIDController.setPositionPIDWrappingEnabled(true);
+        m_turnPIDController.setPositionPIDWrappingMaxInput(180);
+        m_turnPIDController.setPositionPIDWrappingMinInput(-180);
+
+        configEncoder(cancoderAbsoluteOffset);
+
+        mot_drive.burnFlash();
         mot_turn.burnFlash();
     }
 
@@ -100,9 +102,9 @@ public class SwerveModule {
      */
     private void configEncoder(double cancoderAbsoluteOffset) {
         enc_drive.setVelocityConversionFactor(kRelativeEncoder.kDriveSensorCoefficient * 60);
-        enc_drive.setPositionConversionFactor(kRelativeEncoder.kDriveSensorCoefficient * 60);
+        enc_drive.setPositionConversionFactor(kRelativeEncoder.kDriveSensorCoefficient);
         enc_turn.setVelocityConversionFactor(kRelativeEncoder.kTurnSensorCoefficient * 60);
-        enc_turn.setPositionConversionFactor(kRelativeEncoder.kTurnSensorCoefficient * 60);
+        enc_turn.setPositionConversionFactor(kRelativeEncoder.kTurnSensorCoefficient);
         
         m_cancoderConfiguration.magnetOffsetDegrees = cancoderAbsoluteOffset;
         m_cancoderConfiguration.absoluteSensorRange = AbsoluteSensorRange.Signed_PlusMinus180;
@@ -125,29 +127,26 @@ public class SwerveModule {
     }
 
     /**
-     * Return the absolute turn encoder position in meters.
-     * 
-     * Equation:
-     * circumference * (angle / 360)
+     * Return the absolute turn encoder position in degrees.
      * 
      * @return absolute turn encoder position
      */
     public double getAbsoluteTurnEncoderPosition() {
-        return kDrive.kWheelCircumference * (enc_cancoder.getAbsolutePosition() / 360);
+        return enc_cancoder.getAbsolutePosition();
     }
 
     /**
      * @return current state of the module
      */
     public SwerveModuleState getState() {
-        return new SwerveModuleState(enc_drive.getVelocity(), new Rotation2d(enc_turn.getPosition()));
+        return new SwerveModuleState(enc_drive.getVelocity(), Rotation2d.fromDegrees(enc_turn.getPosition()));
     }
 
     /**
      * @return current position of the module
      */
     public SwerveModulePosition getPosition() {
-        return new SwerveModulePosition(enc_drive.getPosition(), new Rotation2d(enc_turn.getPosition()));
+        return new SwerveModulePosition(enc_drive.getPosition(), Rotation2d.fromDegrees(enc_turn.getPosition()));
     }
 
     /**
@@ -166,11 +165,22 @@ public class SwerveModule {
         }
 
         // Optimize reference state
-        SwerveModuleState optimizedState = SwerveModuleState.optimize(desiredState, new Rotation2d(enc_turn.getPosition()));
+        SwerveModuleState optimizedState = SwerveModuleState.optimize(desiredState, Rotation2d.fromDegrees(enc_turn.getPosition()));
 
         // Drive output
-        m_drivePIDController.setReference(optimizedState.speedMetersPerSecond, ControlType.kVelocity, 0);
-        m_turnPIDController.setReference(optimizedState.angle.getRadians(), ControlType.kVelocity, 0);
+        m_drivePIDController.setReference(optimizedState.speedMetersPerSecond, ControlType.kVelocity);
+        m_turnPIDController.setReference(optimizedState.angle.getDegrees(), ControlType.kPosition);
+
+        System.out.println(optimizedState.speedMetersPerSecond + " " + optimizedState.angle.getDegrees());
+    }
+
+    public double getTurnEncoderPosition() {
+        return enc_turn.getPosition();
+    }
+
+    @Override
+    public void periodic() {
+
     }
     
 }

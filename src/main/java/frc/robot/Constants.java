@@ -22,7 +22,7 @@ public final class Constants {
     public static final class kCANID {
         // All placeholder values
 
-        public static final int kDriveMotor1                        = 11;
+        public static final int kDriveMotor1                        = 12;
         public static final int kDriveMotor2                        = 9;
         public static final int kDriveMotor3                        = 15;
         public static final int kDriveMotor4                        = 18;
@@ -48,7 +48,7 @@ public final class Constants {
 
     public static final class kDrive {
 
-        public static final double kWheelRadius                     = 0.0475; // metres
+        public static final double kWheelRadius                     = 0.1; // metres
         public static final double kWheelDiameter                   = 2 * kWheelRadius;
         public static final double kWheelCircumference              = Math.PI * kWheelDiameter;
 
@@ -71,26 +71,26 @@ public final class Constants {
         }
 
         public static final class kCANCoder {
-            public static final double kCPR                         = 4096;
+            public static final double kCPR                         = 42;
 
             public static final double kDriveSensorCoefficient      = kWheelCircumference / kCPR;
             public static final double kTurnSensorCoefficient       = 2 * Math.PI / kCPR;
             public static final String kUnitString                  = "m";
 
-            public static final double kAbsoluteEncoderOffset1      = 0.0; // TODO: Find this value
-            public static final double kAbsoluteEncoderOffset2      = 0.0; // TODO: Find this value
-            public static final double kAbsoluteEncoderOffset3      = 0.0; // TODO: Find this value
-            public static final double kAbsoluteEncoderOffset4      = 0.0; // TODO: Find this value
+            public static final double kAbsoluteEncoderOffset1      = -31.641;
+            public static final double kAbsoluteEncoderOffset2      = -160.488;
+            public static final double kAbsoluteEncoderOffset3      = 24.521;
+            public static final double kAbsoluteEncoderOffset4      = 77.783;
         }
 
         // TODO: Must be tuned
         // https://docs.wpilib.org/en/stable/docs/software/advanced-controls/index.html
-        public static final double kDriveP                          = 0;
+        public static final double kDriveP                          = 0.05;
         public static final double kDriveI                          = 0;
         public static final double kDriveD                          = 0;
         public static final double kDriveFF                         = 0;
 
-        public static final double kTurnP                           = 0;
+        public static final double kTurnP                           = 0.05;
         public static final double kTurnI                           = 0;
         public static final double kTurnD                           = 0;
         public static final double kTurnFF                          = 0;

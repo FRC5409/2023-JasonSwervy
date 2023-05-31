@@ -71,14 +71,22 @@ public class Drivetrain extends SubsystemBase {
         // Shuffleboard
         if (debugMode) {
             sb_drivetrainTab = Shuffleboard.getTab("Drivetrain");
-            sb_drivetrainTab.addNumber("VEL Front left",    () -> mod_frontLeft.getState().speedMetersPerSecond)  .withPosition(1, 1);
-            sb_drivetrainTab.addNumber("VEL Front right",   () -> mod_frontRight.getState().speedMetersPerSecond) .withPosition(2, 1);
-            sb_drivetrainTab.addNumber("VEL Back left",     () -> mod_backLeft.getState().speedMetersPerSecond)   .withPosition(3, 1);
-            sb_drivetrainTab.addNumber("VEL Back right",    () -> mod_backRight.getState().speedMetersPerSecond)  .withPosition(4, 1);
-            sb_drivetrainTab.addNumber("ANGLE Front left",  () -> mod_frontLeft.getState().angle.getDegrees())    .withPosition(1, 1);
-            sb_drivetrainTab.addNumber("ANGLE Front right", () -> mod_frontRight.getState().angle.getDegrees())   .withPosition(2, 1);
-            sb_drivetrainTab.addNumber("ANGLE Back left",   () -> mod_backLeft.getState().angle.getDegrees())     .withPosition(3, 1);
-            sb_drivetrainTab.addNumber("ANGLE Back right",  () -> mod_backRight.getState().angle.getDegrees())    .withPosition(4, 1);
+            sb_drivetrainTab.addNumber("VEL Front left",    () -> mod_frontLeft.getState().speedMetersPerSecond)  .withPosition(0, 0);
+            sb_drivetrainTab.addNumber("VEL Front right",   () -> mod_frontRight.getState().speedMetersPerSecond) .withPosition(1, 0);
+            sb_drivetrainTab.addNumber("VEL Back left",     () -> mod_backLeft.getState().speedMetersPerSecond)   .withPosition(2, 0);
+            sb_drivetrainTab.addNumber("VEL Back right",    () -> mod_backRight.getState().speedMetersPerSecond)  .withPosition(3, 0);
+            sb_drivetrainTab.addNumber("ANGLE Front left",  () -> mod_frontLeft.getPosition().angle.getDegrees())    .withPosition(0, 1);
+            sb_drivetrainTab.addNumber("ANGLE Front right", () -> mod_frontRight.getPosition().angle.getDegrees())   .withPosition(1, 1);
+            sb_drivetrainTab.addNumber("ANGLE Back left",   () -> mod_backLeft.getPosition().angle.getDegrees())     .withPosition(2, 1);
+            sb_drivetrainTab.addNumber("ANGLE Back right",  () -> mod_backRight.getPosition().angle.getDegrees())    .withPosition(3, 1);
+            sb_drivetrainTab.addNumber("ABSANGLE Front left",  () -> mod_frontLeft.getAbsoluteTurnEncoderPosition())    .withPosition(0, 2);
+            sb_drivetrainTab.addNumber("ABSANGLE Front right", () -> mod_frontRight.getAbsoluteTurnEncoderPosition())   .withPosition(1, 2);
+            sb_drivetrainTab.addNumber("ABSANGLE Back left",   () -> mod_backLeft.getAbsoluteTurnEncoderPosition())     .withPosition(2, 2);
+            sb_drivetrainTab.addNumber("ABSANGLE Back right",  () -> mod_backRight.getAbsoluteTurnEncoderPosition())    .withPosition(3, 2);
+            sb_drivetrainTab.addNumber("POS Front left",  () -> mod_frontLeft.getPosition().distanceMeters)    .withPosition(0, 3);
+            sb_drivetrainTab.addNumber("POS Front right", () -> mod_frontRight.getPosition().distanceMeters)   .withPosition(1, 3);
+            sb_drivetrainTab.addNumber("POS Back left",   () -> mod_backLeft.getPosition().distanceMeters)     .withPosition(2, 3);
+            sb_drivetrainTab.addNumber("POS Back right",  () -> mod_backRight.getPosition().distanceMeters)    .withPosition(3, 3);
         }
         
     }
@@ -97,7 +105,7 @@ public class Drivetrain extends SubsystemBase {
 
     public void updateOdometry() {
         m_odometry.update(m_gyro.getRotation2d(),
-            new SwerveModulePosition[] {mod_frontLeft.getPosition(), mod_frontRight.getPosition(),mod_backLeft.getPosition(), mod_backRight.getPosition()});
+            new SwerveModulePosition[] {mod_frontLeft.getPosition(), mod_frontRight.getPosition(), mod_backLeft.getPosition(), mod_backRight.getPosition()});
     }
 
     /**
@@ -112,6 +120,10 @@ public class Drivetrain extends SubsystemBase {
         // Get swerve module desired states
         SwerveModuleState[] swerveModuleStates = m_kinematics.toSwerveModuleStates(
             ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rotation, m_gyro.getRotation2d()));
+
+        // for (int i = 0; i < swerveModuleStates.length; i++) {
+        //     SmartDashboard.putNumber("Module " + i, swerveModuleStates[i].speedMetersPerSecond);
+        // }
         
         // Limit speeds
         SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, kDrive.kMaxDriveVelocity);
