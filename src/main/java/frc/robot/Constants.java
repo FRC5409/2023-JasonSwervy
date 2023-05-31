@@ -42,13 +42,13 @@ public final class Constants {
     }
 
     public static final class kRobot {
-        public static final double length                           = 0.6;
-        public static final double width                            = 0.6;
+        public static final double length                           = 0.74;
+        public static final double width                            = 0.74;
     }
 
     public static final class kDrive {
 
-        public static final double kWheelRadius                     = 0.1; // metres
+        public static final double kWheelRadius                     = 0.05; // metres
         public static final double kWheelDiameter                   = 2 * kWheelRadius;
         public static final double kWheelCircumference              = Math.PI * kWheelDiameter;
 
@@ -71,11 +71,11 @@ public final class Constants {
         }
 
         public static final class kCANCoder {
-            public static final double kCPR                         = 42;
+            public static final double kCPR                         = 4096;
 
-            public static final double kDriveSensorCoefficient      = kWheelCircumference / kCPR;
-            public static final double kTurnSensorCoefficient       = 2 * Math.PI / kCPR;
-            public static final String kUnitString                  = "m";
+            // public static final double kDriveSensorCoefficient      = kWheelCircumference / kCPR;
+            // public static final double kTurnSensorCoefficient       = 2 * Math.PI / kCPR;
+            // public static final String kUnitString                  = "m";
 
             public static final double kAbsoluteEncoderOffset1      = -31.641;
             public static final double kAbsoluteEncoderOffset2      = -160.488;

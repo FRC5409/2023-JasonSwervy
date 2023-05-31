@@ -123,7 +123,7 @@ public class SwerveModule extends SubsystemBase {
      */
     public void resetEncoders() {
         enc_drive.setPosition(0);
-        enc_turn.setPosition(getAbsoluteTurnEncoderPosition());
+        enc_turn.setPosition(getAbsoluteTurnEncoderPositionRadians());
     }
 
     /**
@@ -131,22 +131,31 @@ public class SwerveModule extends SubsystemBase {
      * 
      * @return absolute turn encoder position
      */
-    public double getAbsoluteTurnEncoderPosition() {
+    public double getAbsoluteTurnEncoderPositionDegrees() {
         return enc_cancoder.getAbsolutePosition();
+    }
+
+    /**
+     * Return the absolute turn encoder position in radians.
+     * 
+     * @return absolute turn encoder position
+     */
+    public double getAbsoluteTurnEncoderPositionRadians() {
+        return getAbsoluteTurnEncoderPositionDegrees() * (Math.PI / 180);
     }
 
     /**
      * @return current state of the module
      */
     public SwerveModuleState getState() {
-        return new SwerveModuleState(enc_drive.getVelocity(), Rotation2d.fromDegrees(enc_turn.getPosition()));
+        return new SwerveModuleState(enc_drive.getVelocity(), new Rotation2d(enc_turn.getPosition()));
     }
 
     /**
      * @return current position of the module
      */
     public SwerveModulePosition getPosition() {
-        return new SwerveModulePosition(enc_drive.getPosition(), Rotation2d.fromDegrees(enc_turn.getPosition()));
+        return new SwerveModulePosition(enc_drive.getPosition(), new Rotation2d(enc_turn.getPosition()));
     }
 
     /**
@@ -165,7 +174,7 @@ public class SwerveModule extends SubsystemBase {
         }
 
         // Optimize reference state
-        SwerveModuleState optimizedState = SwerveModuleState.optimize(desiredState, Rotation2d.fromDegrees(enc_turn.getPosition()));
+        SwerveModuleState optimizedState = SwerveModuleState.optimize(desiredState, new Rotation2d(enc_turn.getPosition()));
 
         // Drive output
         m_drivePIDController.setReference(optimizedState.speedMetersPerSecond, ControlType.kVelocity);
