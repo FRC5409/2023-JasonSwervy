@@ -140,6 +140,13 @@ public class Drivetrain extends SubsystemBase {
 
     }
 
+    public void resetAllEncoders() {
+        mod_frontLeft.resetEncoders();
+        mod_frontRight.resetEncoders();
+        mod_backLeft.resetEncoders();
+        mod_backRight.resetEncoders();
+    }
+
     /**
      * Stop all motors.
      */
