@@ -148,6 +148,17 @@ public class Drivetrain extends SubsystemBase {
     }
 
     /**
+     * Set to brake mode, or coast mode.
+     * @param brakeMode whether to set brake mode, or coast mode
+     */
+    public void setBrakeMode(boolean brakeMode) {
+        mod_frontLeft.setBrakeMode(brakeMode);
+        mod_frontRight.setBrakeMode(brakeMode);
+        mod_backLeft.setBrakeMode(brakeMode);
+        mod_backRight.setBrakeMode(brakeMode);
+    }
+
+    /**
      * Stop all motors.
      */
     public void stopMotors() {

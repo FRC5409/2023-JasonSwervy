@@ -7,6 +7,10 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.RepeatCommand;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -28,6 +32,28 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
+
+    // Coast mode after 3 seconds
+    new Trigger(this::isEnabled)
+      .negate()
+      .debounce(5)
+      .onTrue(
+        Commands.runOnce(() -> m_robotContainer.sys_drivetrain.setBrakeMode(false)) 
+        .ignoringDisable(true)
+      );
+    
+    // Re-zero encoders every second, while disabled
+    new Trigger(this::isEnabled)
+      .negate()
+      .whileTrue(
+        new RepeatCommand(
+          new ParallelCommandGroup(
+            Commands.runOnce(() -> m_robotContainer.sys_drivetrain.resetAllEncoders()),
+            Commands.waitSeconds(1)
+              .ignoringDisable(true)
+          ).ignoringDisable(true)
+        ).ignoringDisable(true)
+      );
   }
 
   /**
@@ -62,6 +88,8 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }
+
+    m_robotContainer.sys_drivetrain.setBrakeMode(true);
   }
 
   /** This function is called periodically during autonomous. */
@@ -77,6 +105,8 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+
+    m_robotContainer.sys_drivetrain.setBrakeMode(true);
   }
 
   /** This function is called periodically during operator control. */

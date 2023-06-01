@@ -28,7 +28,7 @@ public class RobotContainer {
     private final CommandXboxController m_secondaryController;
 
     // Subsystems
-    private final Drivetrain sys_drivetrain;
+    public final Drivetrain sys_drivetrain;
 
     // Commands
     private final DefaultDrive cmd_defaultDrive;

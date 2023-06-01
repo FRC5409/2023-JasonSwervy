@@ -80,7 +80,6 @@ public class SwerveModule extends SubsystemBase {
      */
     private void configMotorsAndEncoders(boolean driveMotorInverted, boolean turnMotorInverted, double cancoderAbsoluteOffset) {
         mot_drive.restoreFactoryDefaults();
-        mot_drive.setIdleMode(IdleMode.kBrake);
         mot_drive.setInverted(driveMotorInverted);
         mot_drive.setSmartCurrentLimit(kDrive.kDriveMotorCurrentLimit);
         m_drivePIDController.setP(kDrive.kDriveP);
@@ -89,7 +88,6 @@ public class SwerveModule extends SubsystemBase {
         m_drivePIDController.setFF(kDrive.kDriveFF);
 
         mot_turn.restoreFactoryDefaults();
-        mot_turn.setIdleMode(IdleMode.kBrake);
         mot_turn.setInverted(turnMotorInverted);
         mot_turn.setSmartCurrentLimit(kDrive.kTurnMotorCurrentLimit);
         m_turnPIDController.setP(kDrive.kTurnP);
@@ -100,6 +98,9 @@ public class SwerveModule extends SubsystemBase {
         m_turnPIDController.setPositionPIDWrappingEnabled(true);
         m_turnPIDController.setPositionPIDWrappingMaxInput(2 * Math.PI);
         m_turnPIDController.setPositionPIDWrappingMinInput(-2 * Math.PI);
+
+        // Set to coast mode on startup. Will set to brake mode on enable.
+        setBrakeMode(false);
 
         configEncoder(cancoderAbsoluteOffset);
 
@@ -193,6 +194,20 @@ public class SwerveModule extends SubsystemBase {
 
     public double getTurnEncoderPosition() {
         return enc_turn.getPosition();
+    }
+
+    /**
+     * Set to brake mode, or coast mode.
+     * @param brakeMode whether to set brake mode, or coast mode
+     */
+    public void setBrakeMode(boolean brakeMode) {
+        if (brakeMode) {
+            mot_drive.setIdleMode(IdleMode.kBrake);
+            mot_turn.setIdleMode(IdleMode.kBrake);
+        } else {
+            mot_drive.setIdleMode(IdleMode.kCoast);
+            mot_turn.setIdleMode(IdleMode.kCoast);
+        }
     }
 
     @Override
