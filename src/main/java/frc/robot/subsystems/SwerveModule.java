@@ -67,6 +67,8 @@ public class SwerveModule extends SubsystemBase {
         m_location = location;
 
         configMotorsAndEncoders(driveMotorInverted, turnMotorInverted, -cancoderAbsoluteOffset);
+
+        resetEncoders();
     }
 
     /**
@@ -117,8 +119,6 @@ public class SwerveModule extends SubsystemBase {
         m_cancoderConfiguration.magnetOffsetDegrees = cancoderAbsoluteOffset;
         m_cancoderConfiguration.absoluteSensorRange = AbsoluteSensorRange.Signed_PlusMinus180;
         enc_cancoder.configAllSettings(m_cancoderConfiguration);
-
-        resetEncoders();
     }
 
     public void stopMotors() {
