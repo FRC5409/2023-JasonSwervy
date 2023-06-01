@@ -2,7 +2,6 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.kDrive;
@@ -50,10 +49,6 @@ public class DefaultDrive extends CommandBase {
         xSpeed *= kDrive.kMaxDriveVelocity; // metres per second
         ySpeed *= kDrive.kMaxDriveVelocity; // metres per second
         rotation *= kDrive.kMaxDriveAngularVelocity; // radians per second
-
-        SmartDashboard.putNumber("xspeed", xSpeed);
-        SmartDashboard.putNumber("yspeed", ySpeed);
-        SmartDashboard.putNumber("rotation", rotation);
 
         sys_drivetrain.drive(xSpeed, ySpeed, rotation);
     }

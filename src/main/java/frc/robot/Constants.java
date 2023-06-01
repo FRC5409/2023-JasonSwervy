@@ -85,6 +85,13 @@ public final class Constants {
             public static final double kAbsoluteEncoderOffset4      = 77.520;
         }
 
+        public static enum Location {
+            TopLeft,
+            TopRight,
+            BottomLeft,
+            BottomRight
+        }
+
         // TODO: Must be tuned
         // https://docs.wpilib.org/en/stable/docs/software/advanced-controls/index.html
         public static final double kDriveP                          = 0.01;

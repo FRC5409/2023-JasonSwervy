@@ -13,9 +13,11 @@ import com.revrobotics.SparkMaxPIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.kDrive;
 import frc.robot.Constants.kDrive.kCANCoder;
+import frc.robot.Constants.kDrive.Location;
 import frc.robot.Constants.kDrive.kRelativeEncoder;
 
 /**
@@ -39,10 +41,13 @@ public class SwerveModule extends SubsystemBase {
     private final SparkMaxPIDController m_drivePIDController;
     private final SparkMaxPIDController m_turnPIDController;
 
+    // Location
+    private final Location m_location;
+
 
     public SwerveModule(int driveMotorID, int turnMotorID,
         int cancoderID, double cancoderAbsoluteOffset,
-        boolean driveMotorInverted, boolean turnMotorInverted) {
+        boolean driveMotorInverted, boolean turnMotorInverted, Location location) {
 
         // Motors
         mot_drive = new CANSparkMax(driveMotorID, MotorType.kBrushless);
@@ -57,6 +62,9 @@ public class SwerveModule extends SubsystemBase {
         // PID Controllers
         m_drivePIDController = mot_drive.getPIDController();
         m_turnPIDController = mot_turn.getPIDController();
+
+        // Location
+        m_location = location;
 
         configMotorsAndEncoders(driveMotorInverted, turnMotorInverted, -cancoderAbsoluteOffset);
     }
@@ -88,8 +96,8 @@ public class SwerveModule extends SubsystemBase {
         m_turnPIDController.setFF(kDrive.kTurnFF);
         m_turnPIDController.setSmartMotionMaxAccel(kDrive.kMaxTurnAngularAcceleration, 0);
         m_turnPIDController.setPositionPIDWrappingEnabled(true);
-        m_turnPIDController.setPositionPIDWrappingMaxInput(180);
-        m_turnPIDController.setPositionPIDWrappingMinInput(-180);
+        m_turnPIDController.setPositionPIDWrappingMaxInput(2 * Math.PI);
+        m_turnPIDController.setPositionPIDWrappingMinInput(-2 * Math.PI);
 
         configEncoder(cancoderAbsoluteOffset);
 
@@ -177,10 +185,10 @@ public class SwerveModule extends SubsystemBase {
         SwerveModuleState optimizedState = SwerveModuleState.optimize(desiredState, new Rotation2d(enc_turn.getPosition()));
 
         // Drive output
-        m_drivePIDController.setReference(optimizedState.speedMetersPerSecond, ControlType.kVelocity);
-        m_turnPIDController.setReference(optimizedState.angle.getDegrees(), ControlType.kPosition);
-
-        System.out.println(optimizedState.speedMetersPerSecond + " " + optimizedState.angle.getDegrees());
+        // m_drivePIDController.setReference(optimizedState.speedMetersPerSecond, ControlType.kVelocity);
+        m_turnPIDController.setReference(optimizedState.angle.getRadians(), ControlType.kPosition);
+        SmartDashboard.putNumber(m_location + "DRIVE", optimizedState.speedMetersPerSecond);
+        SmartDashboard.putNumber(m_location + "TURN", optimizedState.angle.getDegrees());
     }
 
     public double getTurnEncoderPosition() {

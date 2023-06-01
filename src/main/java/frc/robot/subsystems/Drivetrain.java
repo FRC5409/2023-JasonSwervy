@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.sensors.WPI_Pigeon2;
+import com.ctre.phoenix.sensors.Pigeon2.AxisDirection;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -17,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.kCANID;
 import frc.robot.Constants.kDrive;
 import frc.robot.Constants.kRobot;
+import frc.robot.Constants.kDrive.Location;
 import frc.robot.Constants.kDrive.kCANCoder;
 
 public class Drivetrain extends SubsystemBase {
@@ -48,10 +50,10 @@ public class Drivetrain extends SubsystemBase {
     public Drivetrain() {
 
         // Swerve modules
-        mod_frontLeft   = new SwerveModule(kCANID.kDriveMotor1, kCANID.kTurnMotor1, kCANID.kCANCoder1, kCANCoder.kAbsoluteEncoderOffset1, true, true);
-        mod_frontRight  = new SwerveModule(kCANID.kDriveMotor2, kCANID.kTurnMotor2, kCANID.kCANCoder2, kCANCoder.kAbsoluteEncoderOffset2, false, false);
-        mod_backLeft    = new SwerveModule(kCANID.kDriveMotor3, kCANID.kTurnMotor3, kCANID.kCANCoder3, kCANCoder.kAbsoluteEncoderOffset3, true, true);
-        mod_backRight   = new SwerveModule(kCANID.kDriveMotor4, kCANID.kTurnMotor4, kCANID.kCANCoder4, kCANCoder.kAbsoluteEncoderOffset4, false, false);
+        mod_frontLeft   = new SwerveModule(kCANID.kDriveMotor1, kCANID.kTurnMotor1, kCANID.kCANCoder1, kCANCoder.kAbsoluteEncoderOffset1, true, true, Location.TopLeft);
+        mod_frontRight  = new SwerveModule(kCANID.kDriveMotor2, kCANID.kTurnMotor2, kCANID.kCANCoder2, kCANCoder.kAbsoluteEncoderOffset2, false, false, Location.TopRight);
+        mod_backLeft    = new SwerveModule(kCANID.kDriveMotor3, kCANID.kTurnMotor3, kCANID.kCANCoder3, kCANCoder.kAbsoluteEncoderOffset3, true, true, Location.BottomLeft);
+        mod_backRight   = new SwerveModule(kCANID.kDriveMotor4, kCANID.kTurnMotor4, kCANID.kCANCoder4, kCANCoder.kAbsoluteEncoderOffset4, false, false, Location.BottomRight);
 
         // Swerve kinematic points
         m_frontLeftLoc  = new Translation2d(kRobot.length / 2, kRobot.width / 2);
@@ -61,6 +63,7 @@ public class Drivetrain extends SubsystemBase {
 
         // Sensors and location
         m_gyro          = new WPI_Pigeon2(kCANID.kGyro);
+        m_gyro.configMountPose(AxisDirection.NegativeY, AxisDirection.PositiveZ);
         zeroHeading();
         m_kinematics    = new SwerveDriveKinematics(m_frontLeftLoc, m_frontRightLoc, m_backLeftLoc, m_backRightLoc);
         m_odometry      = new SwerveDriveOdometry(m_kinematics, m_gyro.getRotation2d(),
@@ -71,22 +74,23 @@ public class Drivetrain extends SubsystemBase {
         // Shuffleboard
         if (debugMode) {
             sb_drivetrainTab = Shuffleboard.getTab("Drivetrain");
-            sb_drivetrainTab.addNumber("VEL Front left",       () -> mod_frontLeft.getState().speedMetersPerSecond)            .withPosition(0, 0);
-            sb_drivetrainTab.addNumber("VEL Front right",      () -> mod_frontRight.getState().speedMetersPerSecond)           .withPosition(1, 0);
-            sb_drivetrainTab.addNumber("VEL Back left",        () -> mod_backLeft.getState().speedMetersPerSecond)             .withPosition(2, 0);
-            sb_drivetrainTab.addNumber("VEL Back right",       () -> mod_backRight.getState().speedMetersPerSecond)            .withPosition(3, 0);
-            sb_drivetrainTab.addNumber("RAD Front left",     () -> mod_frontLeft.getTurnEncoderPosition())           .withPosition(0, 1);
-            sb_drivetrainTab.addNumber("RAD Front right",    () -> mod_frontRight.getTurnEncoderPosition())          .withPosition(1, 1);
-            sb_drivetrainTab.addNumber("RAD Back left",      () -> mod_backLeft.getTurnEncoderPosition())            .withPosition(2, 1);
-            sb_drivetrainTab.addNumber("RAD Back right",     () -> mod_backRight.getTurnEncoderPosition())           .withPosition(3, 1);
-            sb_drivetrainTab.addNumber("ANGLE Front left",  () -> mod_frontLeft.getAbsoluteTurnEncoderPositionDegrees())    .withPosition(0, 2);
-            sb_drivetrainTab.addNumber("ANGLE Front right", () -> mod_frontRight.getAbsoluteTurnEncoderPositionDegrees())   .withPosition(1, 2);
-            sb_drivetrainTab.addNumber("ANGLE Back left",   () -> mod_backLeft.getAbsoluteTurnEncoderPositionDegrees())     .withPosition(2, 2);
-            sb_drivetrainTab.addNumber("ANGLE Back right",  () -> mod_backRight.getAbsoluteTurnEncoderPositionDegrees())    .withPosition(3, 2);
-            sb_drivetrainTab.addNumber("POS Front left",       () -> mod_frontLeft.getPosition().distanceMeters)               .withPosition(0, 3);
-            sb_drivetrainTab.addNumber("POS Front right",      () -> mod_frontRight.getPosition().distanceMeters)              .withPosition(1, 3);
-            sb_drivetrainTab.addNumber("POS Back left",        () -> mod_backLeft.getPosition().distanceMeters)                .withPosition(2, 3);
-            sb_drivetrainTab.addNumber("POS Back right",       () -> mod_backRight.getPosition().distanceMeters)               .withPosition(3, 3);
+            sb_drivetrainTab.addNumber("VEL Front left",       () -> mod_frontLeft.getState().speedMetersPerSecond)          .withPosition(0, 0);
+            sb_drivetrainTab.addNumber("VEL Front right",      () -> mod_frontRight.getState().speedMetersPerSecond)         .withPosition(1, 0);
+            sb_drivetrainTab.addNumber("VEL Back left",        () -> mod_backLeft.getState().speedMetersPerSecond)           .withPosition(2, 0);
+            sb_drivetrainTab.addNumber("VEL Back right",       () -> mod_backRight.getState().speedMetersPerSecond)          .withPosition(3, 0);
+            sb_drivetrainTab.addNumber("RAD Front left",       () -> mod_frontLeft.getTurnEncoderPosition())                 .withPosition(0, 1);
+            sb_drivetrainTab.addNumber("RAD Front right",      () -> mod_frontRight.getTurnEncoderPosition())                .withPosition(1, 1);
+            sb_drivetrainTab.addNumber("RAD Back left",        () -> mod_backLeft.getTurnEncoderPosition())                  .withPosition(2, 1);
+            sb_drivetrainTab.addNumber("RAD Back right",       () -> mod_backRight.getTurnEncoderPosition())                 .withPosition(3, 1);
+            sb_drivetrainTab.addNumber("ANGLE Front left",     () -> mod_frontLeft.getAbsoluteTurnEncoderPositionDegrees())  .withPosition(0, 2);
+            sb_drivetrainTab.addNumber("ANGLE Front right",    () -> mod_frontRight.getAbsoluteTurnEncoderPositionDegrees()) .withPosition(1, 2);
+            sb_drivetrainTab.addNumber("ANGLE Back left",      () -> mod_backLeft.getAbsoluteTurnEncoderPositionDegrees())   .withPosition(2, 2);
+            sb_drivetrainTab.addNumber("ANGLE Back right",     () -> mod_backRight.getAbsoluteTurnEncoderPositionDegrees())  .withPosition(3, 2);
+            sb_drivetrainTab.addNumber("POS Front left",       () -> mod_frontLeft.getPosition().distanceMeters)             .withPosition(0, 3);
+            sb_drivetrainTab.addNumber("POS Front right",      () -> mod_frontRight.getPosition().distanceMeters)            .withPosition(1, 3);
+            sb_drivetrainTab.addNumber("POS Back left",        () -> mod_backLeft.getPosition().distanceMeters)              .withPosition(2, 3);
+            sb_drivetrainTab.addNumber("POS Back right",       () -> mod_backRight.getPosition().distanceMeters)             .withPosition(3, 3);
+            sb_drivetrainTab.addNumber("GYRO Heading",         this::getHeading)                                             .withPosition(5, 0);
         }
         
     }
