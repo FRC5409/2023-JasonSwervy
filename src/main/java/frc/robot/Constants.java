@@ -51,9 +51,9 @@ public final class Constants {
         public static final double kWheelDiameter                   = 2 * kWheelRadius;
         public static final double kWheelCircumference              = Math.PI * kWheelDiameter;
 
-        public static final double kGearRatio                       = 150 / 7;
+        public static final double kGearRatio                       = 150.0 / 7.0;
 
-        public static final double kMaxDriveVelocity                = 1; // metres per second
+        public static final double kMaxDriveVelocity                = 4; // metres per second
         public static final double kMaxDriveAngularVelocity         = Math.PI; // half rotation per second
         public static final double kMaxTurnAngularAcceleration      = 2 * Math.PI; // radius per second squared
 
@@ -67,8 +67,8 @@ public final class Constants {
         public static final class kRelativeEncoder {
             public static final double kCPR                         = 42;
 
-            public static final double kDriveSensorCoefficient      = kWheelCircumference / (kCPR / 2 / Math.PI);
-            public static final double kTurnSensorCoefficient       = 2 * Math.PI / (kCPR / 2);
+            public static final double kDriveSensorCoefficient      = kGearRatio / kWheelCircumference / 1000.0;
+            public static final double kTurnSensorCoefficient       = 2 * Math.PI / kGearRatio;
         }
 
         public static final class kCANCoder {
@@ -78,10 +78,10 @@ public final class Constants {
             // public static final double kTurnSensorCoefficient       = 2 * Math.PI / kCPR;
             // public static final String kUnitString                  = "m";
 
-            public static final double kAbsoluteEncoderOffset1      = 328.975;
-            public static final double kAbsoluteEncoderOffset2      = 20.479;
-            public static final double kAbsoluteEncoderOffset3      = 205.312;
-            public static final double kAbsoluteEncoderOffset4      = 77.520;
+            public static final double kAbsoluteEncoderOffset1      = 327.744;
+            public static final double kAbsoluteEncoderOffset2      = 20.830;
+            public static final double kAbsoluteEncoderOffset3      = 205.137;
+            public static final double kAbsoluteEncoderOffset4      = 76.641;
         }
 
         public static enum Location {
@@ -93,12 +93,12 @@ public final class Constants {
 
         // TODO: Must be tuned
         // https://docs.wpilib.org/en/stable/docs/software/advanced-controls/index.html
-        public static final double kDriveP                          = 0.001;
+        public static final double kDriveP                          = 0.015;
         public static final double kDriveI                          = 0;
         public static final double kDriveD                          = 0;
-        public static final double kDriveFF                         = 0;
+        public static final double kDriveFF                         = 0.15;
 
-        public static final double kTurnP                           = 0.06;
+        public static final double kTurnP                           = 0.07;
         public static final double kTurnI                           = 0;
         public static final double kTurnD                           = 0;
         public static final double kTurnFF                          = 0;

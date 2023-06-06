@@ -112,9 +112,9 @@ public class SwerveModule extends SubsystemBase {
      * Configure the drive and turn CANCoders.
      */
     private void configEncoder(double cancoderAbsoluteOffset) {
-        enc_drive.setVelocityConversionFactor(kRelativeEncoder.kDriveSensorCoefficient * 60);
+        enc_drive.setVelocityConversionFactor(kRelativeEncoder.kDriveSensorCoefficient / 60);
         enc_drive.setPositionConversionFactor(kRelativeEncoder.kDriveSensorCoefficient);
-        enc_turn.setVelocityConversionFactor(kRelativeEncoder.kTurnSensorCoefficient * 60);
+        enc_turn.setVelocityConversionFactor(kRelativeEncoder.kTurnSensorCoefficient / 60);
         enc_turn.setPositionConversionFactor(kRelativeEncoder.kTurnSensorCoefficient);
         
         m_cancoderConfiguration.magnetOffsetDegrees = cancoderAbsoluteOffset;
@@ -186,9 +186,9 @@ public class SwerveModule extends SubsystemBase {
         SwerveModuleState optimizedState = SwerveModuleState.optimize(desiredState, new Rotation2d(enc_turn.getPosition()));
 
         // Drive output
-        // m_drivePIDController.setReference(optimizedState.speedMetersPerSecond, ControlType.kVelocity);
+        m_drivePIDController.setReference(optimizedState.speedMetersPerSecond, ControlType.kVelocity);
         m_turnPIDController.setReference(optimizedState.angle.getRadians(), ControlType.kPosition);
-        // SmartDashboard.putNumber(m_location + "DRIVE", optimizedState.speedMetersPerSecond);
+        SmartDashboard.putNumber(m_location + "DRIVE", optimizedState.speedMetersPerSecond);
         SmartDashboard.putNumber(m_location + "TURN", optimizedState.angle.getDegrees());
         SmartDashboard.putNumber(m_location + "CURRENT", Math.toDegrees(enc_turn.getPosition()));
     }
