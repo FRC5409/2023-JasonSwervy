@@ -104,7 +104,7 @@ public class Drivetrain extends SubsystemBase {
     }
 
     public double getHeading() {
-        return getRotation2d().getDegrees();
+        return getRotation2d().getDegrees() % 360;
     }
 
     public void updateOdometry() {
