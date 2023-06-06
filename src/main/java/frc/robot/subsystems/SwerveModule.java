@@ -97,7 +97,7 @@ public class SwerveModule extends SubsystemBase {
         m_turnPIDController.setSmartMotionMaxAccel(kDrive.kMaxTurnAngularAcceleration, 0);
         m_turnPIDController.setPositionPIDWrappingEnabled(true);
         m_turnPIDController.setPositionPIDWrappingMaxInput(2 * Math.PI);
-        m_turnPIDController.setPositionPIDWrappingMinInput(-2 * Math.PI);
+        m_turnPIDController.setPositionPIDWrappingMinInput(0);
 
         // Set to coast mode on startup. Will set to brake mode on enable.
         setBrakeMode(false);
@@ -184,6 +184,9 @@ public class SwerveModule extends SubsystemBase {
 
         // Optimize reference state
         SwerveModuleState optimizedState = SwerveModuleState.optimize(desiredState, new Rotation2d(enc_turn.getPosition()));
+
+        // SmartDashboard.putNumber(m_location + " Vel", optimizedState.speedMetersPerSecond);
+        // SmartDashboard.putNumber(m_location + " Deg", optimizedState.angle.getDegrees());
 
         // Drive output
         m_drivePIDController.setReference(optimizedState.speedMetersPerSecond, ControlType.kVelocity);

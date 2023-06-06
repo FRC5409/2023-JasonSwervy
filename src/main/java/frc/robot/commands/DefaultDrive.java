@@ -2,6 +2,8 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.kDrive;
@@ -11,6 +13,8 @@ public class DefaultDrive extends CommandBase {
 
     Drivetrain sys_drivetrain;
     CommandXboxController m_controller;
+
+    double targetAngle;
 
     // SlewRateLimiter m_xSpeedSlewRateLimiter;
     // SlewRateLimiter m_ySpeedSlewRateLimiter;
@@ -34,11 +38,16 @@ public class DefaultDrive extends CommandBase {
         // Controller inputs
         double xSpeed = m_controller.getLeftY();
         double ySpeed = m_controller.getLeftX();
-        double rotation = m_controller.getRightX();
 
-        if (Math.abs(xSpeed) < 0.1) xSpeed = 0;
-        if (Math.abs(ySpeed) < 0.1) ySpeed = 0;
-        if (Math.abs(rotation) < 0.1) rotation = 0;
+        double xRotation = m_controller.getRightX();
+        double yRotation = m_controller.getRightY();
+
+        if (Math.abs(xSpeed) < 0.125) xSpeed = 0;
+        if (Math.abs(ySpeed) < 0.125) ySpeed = 0;
+        if (Math.abs(xRotation) < 0.1) xRotation = 0;
+        if (Math.abs(yRotation) < 0.1) yRotation = 0;
+
+        targetAngle = getRotationTargetAngle(xRotation, yRotation);
 
         // Apply deadband and slew rate
         // xSpeed = m_xSpeedSlewRateLimiter.calculate(MathUtil.applyDeadband(xSpeed, kDrive.kXSpeedDeadband));
@@ -48,8 +57,30 @@ public class DefaultDrive extends CommandBase {
         // Multiply/scale from percentage to speed
         xSpeed *= kDrive.kMaxDriveVelocity; // metres per second
         ySpeed *= kDrive.kMaxDriveVelocity; // metres per second
-        rotation *= kDrive.kMaxDriveAngularVelocity; // radians
+        // rotation *= kDrive.kMaxTurnAngularVelocity; // radians
 
-        sys_drivetrain.drive(xSpeed, ySpeed, rotation);
+        sys_drivetrain.drive(xSpeed, ySpeed, targetAngle);
+    }
+
+    /**
+     * Get the target rotation angle, in radians.
+     * 
+     * 0 deg = forward
+     * 90 deg = left
+     * 180 deg = backward
+     * 270 deg = right
+     * 
+     * @param xRotation right stick x
+     * @param yRotation right stick y
+     * @return target angle
+     */
+    private double getRotationTargetAngle(double xRotation, double yRotation) {
+
+        if (xRotation == 0 && yRotation == 0)
+            return targetAngle;
+        
+        double angle = Math.atan2(-xRotation, -yRotation);
+        if (angle < 0) angle += Math.toRadians(360);
+        return angle;
     }
 }

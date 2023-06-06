@@ -3,6 +3,8 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.sensors.WPI_Pigeon2;
 import com.ctre.phoenix.sensors.Pigeon2.AxisDirection;
 
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -42,6 +44,9 @@ public class Drivetrain extends SubsystemBase {
 
     private final Field2d m_field;
 
+    // Robot heading PID
+    private final PIDController m_headingController;
+
     // Shuffleboard
     private boolean debugMode = true;
     private ShuffleboardTab sb_drivetrainTab;
@@ -70,6 +75,11 @@ public class Drivetrain extends SubsystemBase {
                             new SwerveModulePosition[] {mod_frontLeft.getPosition(), mod_frontRight.getPosition(), mod_backLeft.getPosition(), mod_backRight.getPosition()});
         
         m_field = new Field2d();
+
+        // Robot heading PID
+        m_headingController = new PIDController(kDrive.kHeadingP, kDrive.kHeadingI, kDrive.kHeadingD);
+        m_headingController.setTolerance(Math.toRadians(1));
+        m_headingController.enableContinuousInput(0, Math.toRadians(360));
 
         // Shuffleboard
         if (debugMode) {
@@ -117,9 +127,12 @@ public class Drivetrain extends SubsystemBase {
      * 
      * @param xSpeed forward/backward axis, relative to field
      * @param ySpeed left/right axis, relative to field
-     * @param rotation angular rate
+     * @param targetAngle target heading
      */
-    public void drive(double xSpeed, double ySpeed, double rotation) {
+    public void drive(double xSpeed, double ySpeed, double targetAngle) {
+
+        double currentAngle = Math.toRadians(getHeading());
+        double rotation = (targetAngle == -1) ? 0 : -m_headingController.calculate(currentAngle, targetAngle);
 
         // Get swerve module desired states
         SwerveModuleState[] swerveModuleStates = m_kinematics.toSwerveModuleStates(
