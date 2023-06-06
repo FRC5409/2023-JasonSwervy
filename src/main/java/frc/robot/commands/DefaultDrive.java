@@ -49,12 +49,11 @@ public class DefaultDrive extends CommandBase {
         if (Math.abs(ySpeed) < 0.125) ySpeed = 0;
         if (Math.abs(xRotation) < 0.2) xRotation = 0;
         if (Math.abs(yRotation) < 0.2) yRotation = 0;
-        if (Math.abs(manualXRotation) < 0.1) manualXRotation = 0;
-        if (Math.abs(manualYRotation) < 0.1) manualYRotation = 0;
 
         double manualRotation = manualXRotation + manualYRotation;
 
         targetAngle = getRotationTargetAngle(xRotation, yRotation);
+        if (manualRotation != 0) targetAngle = Math.toRadians(sys_drivetrain.getHeading());
         SmartDashboard.putNumber("target angle", Math.toDegrees(targetAngle));
 
         // Apply deadband and slew rate
@@ -65,7 +64,7 @@ public class DefaultDrive extends CommandBase {
         // Multiply/scale from percentage to speed
         xSpeed *= kDrive.kMaxDriveVelocity; // metres per second
         ySpeed *= kDrive.kMaxDriveVelocity; // metres per second
-        manualRotation *= kDrive.kMaxTurnAngularVelocity; // radians
+        manualRotation *= (kDrive.kMaxTurnAngularVelocity / 2); // radians
 
         sys_drivetrain.drive(xSpeed, ySpeed, targetAngle, manualRotation);
     }
