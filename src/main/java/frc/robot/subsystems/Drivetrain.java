@@ -1,9 +1,12 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.sensors.Pigeon2.AxisDirection;
+import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.commands.PPSwerveControllerCommand;
 import com.ctre.phoenix.sensors.WPI_Pigeon2;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -15,6 +18,9 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.kCANID;
 import frc.robot.Constants.kDrive;
@@ -112,13 +118,24 @@ public class Drivetrain extends SubsystemBase {
         return m_gyro.getRotation2d();
     }
 
+    public Pose2d getPose() {
+        return m_odometry.getPoseMeters();
+    }
+
     public double getHeading() {
         return getRotation2d().getDegrees() % 360;
     }
 
+    public SwerveModulePosition[] getSwerveModulePositions() {
+        return new SwerveModulePosition[] {mod_frontLeft.getPosition(), mod_frontRight.getPosition(), mod_backLeft.getPosition(), mod_backRight.getPosition()};
+    }
+
     public void updateOdometry() {
-        m_odometry.update(m_gyro.getRotation2d(),
-            new SwerveModulePosition[] {mod_frontLeft.getPosition(), mod_frontRight.getPosition(), mod_backLeft.getPosition(), mod_backRight.getPosition()});
+        m_odometry.update(m_gyro.getRotation2d(), getSwerveModulePositions());
+    }
+
+    public void resetOdometry(Pose2d pose) {
+        m_odometry.resetPosition(getRotation2d(), getSwerveModulePositions(), pose);
     }
 
     /**
@@ -150,6 +167,30 @@ public class Drivetrain extends SubsystemBase {
         // Set swerve module desired states
         setModulesStates(swerveModuleStates);
 
+    }
+
+    public Command followTrajectoryCommand(PathPlannerTrajectory trajectory, boolean isFirstPath) {
+        return new SequentialCommandGroup(
+
+            // Reset odometry, if first path
+            new InstantCommand(() -> {
+                if (isFirstPath)
+                    resetOdometry(trajectory.getInitialHolonomicPose());
+            }),
+
+            // https://github.com/mjansen4857/pathplanner/wiki/PathPlannerLib:-Java-Usage#ppswervecontrollercommand
+            new PPSwerveControllerCommand(
+                trajectory,
+                this::getPose,
+                m_kinematics,
+                new PIDController(kDrive.kDriveP, kDrive.kDriveI, kDrive.kDriveD), // X controller
+                new PIDController(kDrive.kDriveP, kDrive.kDriveI, kDrive.kDriveD), // Y Controller
+                new PIDController(kDrive.kTurnP, kDrive.kTurnI, kDrive.kTurnD), // Rotation controller
+                this::setModulesStates,
+                this // require Drivetrain
+            )
+
+        );
     }
 
     /**
