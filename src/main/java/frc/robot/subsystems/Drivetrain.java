@@ -148,11 +148,19 @@ public class Drivetrain extends SubsystemBase {
         SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, kDrive.kMaxDriveVelocity);
 
         // Set swerve module desired states
-        mod_frontLeft.setDesiredState(swerveModuleStates[0]);
-        mod_frontRight.setDesiredState(swerveModuleStates[1]);
-        mod_backLeft.setDesiredState(swerveModuleStates[2]);
-        mod_backRight.setDesiredState(swerveModuleStates[3]);
+        setModulesStates(swerveModuleStates);
 
+    }
+
+    /**
+     * Set swerve module states.
+     * @param states array of 4 SwerveModuleStates
+     */
+    public void setModulesStates(SwerveModuleState[] states) {
+        mod_frontLeft.setDesiredState(states[0]);
+        mod_frontRight.setDesiredState(states[1]);
+        mod_backLeft.setDesiredState(states[2]);
+        mod_backRight.setDesiredState(states[3]);
     }
 
     public void resetAllEncoders() {
