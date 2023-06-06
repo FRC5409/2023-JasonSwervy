@@ -48,7 +48,7 @@ public class DefaultDrive extends CommandBase {
         // Multiply/scale from percentage to speed
         xSpeed *= kDrive.kMaxDriveVelocity; // metres per second
         ySpeed *= kDrive.kMaxDriveVelocity; // metres per second
-        rotation *= kDrive.kMaxDriveAngularVelocity; // radians per second
+        rotation *= kDrive.kMaxDriveAngularVelocity; // radians
 
         sys_drivetrain.drive(xSpeed, ySpeed, rotation);
     }

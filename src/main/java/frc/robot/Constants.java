@@ -20,7 +20,6 @@ public final class Constants {
     }
 
     public static final class kCANID {
-        // All placeholder values
 
         public static final int kDriveMotor1                        = 12;
         public static final int kDriveMotor2                        = 9;
@@ -42,8 +41,8 @@ public final class Constants {
     }
 
     public static final class kRobot {
-        public static final double length                           = 0.74;
-        public static final double width                            = 0.74;
+        public static final double length                           = 0.64;
+        public static final double width                            = 0.64;
     }
 
     public static final class kDrive {
@@ -54,7 +53,7 @@ public final class Constants {
 
         public static final double kGearRatio                       = 150 / 7;
 
-        public static final double kMaxDriveVelocity                = 4; // metres per second
+        public static final double kMaxDriveVelocity                = 1; // metres per second
         public static final double kMaxDriveAngularVelocity         = Math.PI; // half rotation per second
         public static final double kMaxTurnAngularAcceleration      = 2 * Math.PI; // radius per second squared
 
@@ -94,12 +93,12 @@ public final class Constants {
 
         // TODO: Must be tuned
         // https://docs.wpilib.org/en/stable/docs/software/advanced-controls/index.html
-        public static final double kDriveP                          = 0.01;
+        public static final double kDriveP                          = 0.001;
         public static final double kDriveI                          = 0;
         public static final double kDriveD                          = 0;
         public static final double kDriveFF                         = 0;
 
-        public static final double kTurnP                           = 0.01;
+        public static final double kTurnP                           = 0.06;
         public static final double kTurnI                           = 0;
         public static final double kTurnD                           = 0;
         public static final double kTurnFF                          = 0;

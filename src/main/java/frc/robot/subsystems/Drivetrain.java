@@ -50,10 +50,10 @@ public class Drivetrain extends SubsystemBase {
     public Drivetrain() {
 
         // Swerve modules
-        mod_frontLeft   = new SwerveModule(kCANID.kDriveMotor1, kCANID.kTurnMotor1, kCANID.kCANCoder1, kCANCoder.kAbsoluteEncoderOffset1, true, true, Location.TopLeft);
+        mod_frontLeft   = new SwerveModule(kCANID.kDriveMotor1, kCANID.kTurnMotor1, kCANID.kCANCoder1, kCANCoder.kAbsoluteEncoderOffset1, true, false, Location.TopLeft);
         mod_frontRight  = new SwerveModule(kCANID.kDriveMotor2, kCANID.kTurnMotor2, kCANID.kCANCoder2, kCANCoder.kAbsoluteEncoderOffset2, false, false, Location.TopRight);
-        mod_backLeft    = new SwerveModule(kCANID.kDriveMotor3, kCANID.kTurnMotor3, kCANID.kCANCoder3, kCANCoder.kAbsoluteEncoderOffset3, true, true, Location.BottomLeft);
-        mod_backRight   = new SwerveModule(kCANID.kDriveMotor4, kCANID.kTurnMotor4, kCANID.kCANCoder4, kCANCoder.kAbsoluteEncoderOffset4, false, false, Location.BottomRight);
+        mod_backLeft    = new SwerveModule(kCANID.kDriveMotor3, kCANID.kTurnMotor3, kCANID.kCANCoder3, kCANCoder.kAbsoluteEncoderOffset3, false, false, Location.BottomLeft);
+        mod_backRight   = new SwerveModule(kCANID.kDriveMotor4, kCANID.kTurnMotor4, kCANID.kCANCoder4, kCANCoder.kAbsoluteEncoderOffset4, true, false, Location.BottomRight);
 
         // Swerve kinematic points
         m_frontLeftLoc  = new Translation2d(kRobot.length / 2, kRobot.width / 2);
@@ -78,14 +78,14 @@ public class Drivetrain extends SubsystemBase {
             sb_drivetrainTab.addNumber("VEL Front right",      () -> mod_frontRight.getState().speedMetersPerSecond)         .withPosition(1, 0);
             sb_drivetrainTab.addNumber("VEL Back left",        () -> mod_backLeft.getState().speedMetersPerSecond)           .withPosition(2, 0);
             sb_drivetrainTab.addNumber("VEL Back right",       () -> mod_backRight.getState().speedMetersPerSecond)          .withPosition(3, 0);
-            sb_drivetrainTab.addNumber("RAD Front left",       () -> mod_frontLeft.getTurnEncoderPosition())                 .withPosition(0, 1);
-            sb_drivetrainTab.addNumber("RAD Front right",      () -> mod_frontRight.getTurnEncoderPosition())                .withPosition(1, 1);
-            sb_drivetrainTab.addNumber("RAD Back left",        () -> mod_backLeft.getTurnEncoderPosition())                  .withPosition(2, 1);
-            sb_drivetrainTab.addNumber("RAD Back right",       () -> mod_backRight.getTurnEncoderPosition())                 .withPosition(3, 1);
-            sb_drivetrainTab.addNumber("ANGLE Front left",     () -> mod_frontLeft.getAbsoluteTurnEncoderPositionDegrees())  .withPosition(0, 2);
-            sb_drivetrainTab.addNumber("ANGLE Front right",    () -> mod_frontRight.getAbsoluteTurnEncoderPositionDegrees()) .withPosition(1, 2);
-            sb_drivetrainTab.addNumber("ANGLE Back left",      () -> mod_backLeft.getAbsoluteTurnEncoderPositionDegrees())   .withPosition(2, 2);
-            sb_drivetrainTab.addNumber("ANGLE Back right",     () -> mod_backRight.getAbsoluteTurnEncoderPositionDegrees())  .withPosition(3, 2);
+            sb_drivetrainTab.addNumber("DEG Front left",       () -> Math.toDegrees(mod_frontLeft.getTurnEncoderPosition())) .withPosition(0, 1);
+            sb_drivetrainTab.addNumber("DEG Front right",      () -> Math.toDegrees(mod_frontRight.getTurnEncoderPosition())).withPosition(1, 1);
+            sb_drivetrainTab.addNumber("DEG Back left",        () -> Math.toDegrees(mod_backLeft.getTurnEncoderPosition()))  .withPosition(2, 1);
+            sb_drivetrainTab.addNumber("DEG Back right",       () -> Math.toDegrees(mod_backRight.getTurnEncoderPosition())) .withPosition(3, 1);
+            sb_drivetrainTab.addNumber("ABS Front left",       () -> mod_frontLeft.getAbsoluteTurnEncoderPositionDegrees())  .withPosition(0, 2);
+            sb_drivetrainTab.addNumber("ABS Front right",      () -> mod_frontRight.getAbsoluteTurnEncoderPositionDegrees()) .withPosition(1, 2);
+            sb_drivetrainTab.addNumber("ABS Back left",        () -> mod_backLeft.getAbsoluteTurnEncoderPositionDegrees())   .withPosition(2, 2);
+            sb_drivetrainTab.addNumber("ABS Back right",       () -> mod_backRight.getAbsoluteTurnEncoderPositionDegrees())  .withPosition(3, 2);
             sb_drivetrainTab.addNumber("POS Front left",       () -> mod_frontLeft.getPosition().distanceMeters)             .withPosition(0, 3);
             sb_drivetrainTab.addNumber("POS Front right",      () -> mod_frontRight.getPosition().distanceMeters)            .withPosition(1, 3);
             sb_drivetrainTab.addNumber("POS Back left",        () -> mod_backLeft.getPosition().distanceMeters)              .withPosition(2, 3);

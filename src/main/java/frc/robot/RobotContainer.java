@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -71,6 +73,14 @@ public class RobotContainer {
     private void configureBindings() {
         m_primaryController.a()
             .onTrue(Commands.runOnce(() -> sys_drivetrain.resetAllEncoders()));
+
+        m_primaryController.b()
+            .onTrue(Commands.runOnce(() -> sys_drivetrain.drive(0, 0, 0)));
+        
+        m_primaryController.povLeft()
+            .whileTrue(
+                Commands.run(() -> sys_drivetrain.drive(0, 0, 90))
+            );
     }
 
     /**

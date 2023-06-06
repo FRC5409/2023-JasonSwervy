@@ -118,7 +118,7 @@ public class SwerveModule extends SubsystemBase {
         enc_turn.setPositionConversionFactor(kRelativeEncoder.kTurnSensorCoefficient);
         
         m_cancoderConfiguration.magnetOffsetDegrees = cancoderAbsoluteOffset;
-        m_cancoderConfiguration.absoluteSensorRange = AbsoluteSensorRange.Signed_PlusMinus180;
+        m_cancoderConfiguration.absoluteSensorRange = AbsoluteSensorRange.Unsigned_0_to_360;
         enc_cancoder.configAllSettings(m_cancoderConfiguration);
     }
 
@@ -188,8 +188,9 @@ public class SwerveModule extends SubsystemBase {
         // Drive output
         // m_drivePIDController.setReference(optimizedState.speedMetersPerSecond, ControlType.kVelocity);
         m_turnPIDController.setReference(optimizedState.angle.getRadians(), ControlType.kPosition);
-        SmartDashboard.putNumber(m_location + "DRIVE", optimizedState.speedMetersPerSecond);
+        // SmartDashboard.putNumber(m_location + "DRIVE", optimizedState.speedMetersPerSecond);
         SmartDashboard.putNumber(m_location + "TURN", optimizedState.angle.getDegrees());
+        SmartDashboard.putNumber(m_location + "CURRENT", Math.toDegrees(enc_turn.getPosition()));
     }
 
     public double getTurnEncoderPosition() {
