@@ -42,10 +42,17 @@ public class DefaultDrive extends CommandBase {
         double xRotation = m_controller.getRightX();
         double yRotation = m_controller.getRightY();
 
+        double manualXRotation = -m_controller.getLeftTriggerAxis();
+        double manualYRotation = m_controller.getRightTriggerAxis();
+
         if (Math.abs(xSpeed) < 0.125) xSpeed = 0;
         if (Math.abs(ySpeed) < 0.125) ySpeed = 0;
         if (Math.abs(xRotation) < 0.2) xRotation = 0;
         if (Math.abs(yRotation) < 0.2) yRotation = 0;
+        if (Math.abs(manualXRotation) < 0.1) manualXRotation = 0;
+        if (Math.abs(manualYRotation) < 0.1) manualYRotation = 0;
+
+        double manualRotation = manualXRotation + manualYRotation;
 
         targetAngle = getRotationTargetAngle(xRotation, yRotation);
         SmartDashboard.putNumber("target angle", Math.toDegrees(targetAngle));
@@ -58,9 +65,9 @@ public class DefaultDrive extends CommandBase {
         // Multiply/scale from percentage to speed
         xSpeed *= kDrive.kMaxDriveVelocity; // metres per second
         ySpeed *= kDrive.kMaxDriveVelocity; // metres per second
-        // rotation *= kDrive.kMaxTurnAngularVelocity; // radians
+        manualRotation *= kDrive.kMaxTurnAngularVelocity; // radians
 
-        sys_drivetrain.drive(xSpeed, ySpeed, targetAngle);
+        sys_drivetrain.drive(xSpeed, ySpeed, targetAngle, manualRotation);
     }
 
     /**

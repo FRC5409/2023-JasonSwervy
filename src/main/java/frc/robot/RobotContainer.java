@@ -73,14 +73,6 @@ public class RobotContainer {
     private void configureBindings() {
         m_primaryController.a()
             .onTrue(Commands.runOnce(() -> sys_drivetrain.resetAllEncoders()));
-
-        m_primaryController.b()
-            .onTrue(Commands.runOnce(() -> sys_drivetrain.drive(0, 0, 0)));
-        
-        m_primaryController.povLeft()
-            .whileTrue(
-                Commands.run(() -> sys_drivetrain.drive(0, 0, 90))
-            );
     }
 
     /**
