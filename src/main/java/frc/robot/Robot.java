@@ -90,6 +90,7 @@ public class Robot extends TimedRobot {
     }
 
     m_robotContainer.sys_drivetrain.setBrakeMode(true);
+    m_robotContainer.sys_drivetrain.resetAllEncoders();
   }
 
   /** This function is called periodically during autonomous. */
@@ -107,6 +108,7 @@ public class Robot extends TimedRobot {
     }
 
     m_robotContainer.sys_drivetrain.setBrakeMode(true);
+    m_robotContainer.sys_drivetrain.resetAllEncoders();
   }
 
   /** This function is called periodically during operator control. */
