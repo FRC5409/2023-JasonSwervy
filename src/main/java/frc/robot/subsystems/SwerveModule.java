@@ -188,9 +188,6 @@ public class SwerveModule extends SubsystemBase {
         // Drive output
         m_drivePIDController.setReference(optimizedState.speedMetersPerSecond, ControlType.kVelocity);
         m_turnPIDController.setReference(optimizedState.angle.getRadians(), ControlType.kPosition);
-        SmartDashboard.putNumber(m_location + "DRIVE", optimizedState.speedMetersPerSecond);
-        SmartDashboard.putNumber(m_location + "TURN", optimizedState.angle.getDegrees());
-        SmartDashboard.putNumber(m_location + "CURRENT", Math.toDegrees(enc_turn.getPosition()));
     }
 
     public double getTurnEncoderPosition() {
