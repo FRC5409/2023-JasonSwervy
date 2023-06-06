@@ -1,9 +1,5 @@
 package frc.robot.commands;
 
-import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.filter.SlewRateLimiter;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.kDrive;
@@ -54,7 +50,6 @@ public class DefaultDrive extends CommandBase {
 
         targetAngle = getRotationTargetAngle(xRotation, yRotation);
         if (manualRotation != 0) targetAngle = Math.toRadians(sys_drivetrain.getHeading());
-        SmartDashboard.putNumber("target angle", Math.toDegrees(targetAngle));
 
         // Apply deadband and slew rate
         // xSpeed = m_xSpeedSlewRateLimiter.calculate(MathUtil.applyDeadband(xSpeed, kDrive.kXSpeedDeadband));
