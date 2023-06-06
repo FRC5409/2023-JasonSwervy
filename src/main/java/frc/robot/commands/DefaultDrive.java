@@ -44,10 +44,11 @@ public class DefaultDrive extends CommandBase {
 
         if (Math.abs(xSpeed) < 0.125) xSpeed = 0;
         if (Math.abs(ySpeed) < 0.125) ySpeed = 0;
-        if (Math.abs(xRotation) < 0.1) xRotation = 0;
-        if (Math.abs(yRotation) < 0.1) yRotation = 0;
+        if (Math.abs(xRotation) < 0.2) xRotation = 0;
+        if (Math.abs(yRotation) < 0.2) yRotation = 0;
 
         targetAngle = getRotationTargetAngle(xRotation, yRotation);
+        SmartDashboard.putNumber("target angle", Math.toDegrees(targetAngle));
 
         // Apply deadband and slew rate
         // xSpeed = m_xSpeedSlewRateLimiter.calculate(MathUtil.applyDeadband(xSpeed, kDrive.kXSpeedDeadband));
@@ -81,6 +82,6 @@ public class DefaultDrive extends CommandBase {
         
         double angle = Math.atan2(-xRotation, -yRotation);
         if (angle < 0) angle += Math.toRadians(360);
-        return angle;
+        return Math.round(angle / kDrive.kHeadingSnap) * kDrive.kHeadingSnap;
     }
 }

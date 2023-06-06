@@ -64,6 +64,8 @@ public final class Constants {
         public static final double kYSpeedDeadband                  = 0.2;
         public static final double kRotationDeadband                = 0.2;
 
+        public static final double kHeadingSnap                     = Math.toRadians(45);
+
         public static final class kRelativeEncoder {
             public static final double kCPR                         = 42;
 
