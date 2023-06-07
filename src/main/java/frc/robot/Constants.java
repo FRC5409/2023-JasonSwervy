@@ -51,7 +51,8 @@ public final class Constants {
         public static final double kWheelDiameter                   = 2 * kWheelRadius;
         public static final double kWheelCircumference              = Math.PI * kWheelDiameter;
 
-        public static final double kGearRatio                       = 150.0 / 7.0;
+        public static final double kDriveGearRatio                  = 6.75;
+        public static final double kTurnGearRatio                   = 150.0 / 7.0;
 
         public static final double kMaxDriveVelocity                = 4; // metres per second
         public static final double kMaxTurnAngularVelocity          = 2 * Math.toRadians(360); // rotation per second
@@ -69,16 +70,12 @@ public final class Constants {
         public static final class kRelativeEncoder {
             public static final double kCPR                         = 42;
 
-            public static final double kDriveSensorCoefficient      = kGearRatio / kWheelCircumference / 1000.0;
-            public static final double kTurnSensorCoefficient       = 2 * Math.PI / kGearRatio;
+            public static final double kDriveSensorCoefficient      = kWheelCircumference / 1000.0 / kDriveGearRatio;
+            public static final double kTurnSensorCoefficient       = 2 * Math.PI / kTurnGearRatio;
         }
 
         public static final class kCANCoder {
             public static final double kCPR                         = 4096;
-
-            // public static final double kDriveSensorCoefficient      = kWheelCircumference / kCPR;
-            // public static final double kTurnSensorCoefficient       = 2 * Math.PI / kCPR;
-            // public static final String kUnitString                  = "m";
 
             public static final double kAbsoluteEncoderOffset1      = 327.744;
             public static final double kAbsoluteEncoderOffset2      = 20.830;
