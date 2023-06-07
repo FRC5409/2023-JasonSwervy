@@ -70,7 +70,7 @@ public final class Constants {
         public static final class kRelativeEncoder {
             public static final double kCPR                         = 42;
 
-            public static final double kDriveSensorCoefficient      = kWheelCircumference / 1000.0 / kDriveGearRatio;
+            public static final double kDriveSensorCoefficient      = kWheelCircumference / kDriveGearRatio;
             public static final double kTurnSensorCoefficient       = 2 * Math.PI / kTurnGearRatio;
         }
 
