@@ -108,4 +108,11 @@ public final class Constants {
 
     }
 
+    public static final class kAutonomous {
+        public static final String[] kTrajectories                  = {"Path1"}; // all available trajectories from PathPlanner
+
+        public static final double kMaxDriveVelocity                = 2;
+        public static final double kMaxDriveAcceleration            = 2;
+    }
+
 }
