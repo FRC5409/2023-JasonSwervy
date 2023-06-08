@@ -28,11 +28,11 @@
         "y": 3.0
       },
       "prevControl": {
-        "x": 3.0,
-        "y": 3.0
+        "x": 4.0,
+        "y": 2.994666400360729
       },
       "nextControl": null,
-      "holonomicAngle": 180.0,
+      "holonomicAngle": 90.0,
       "isReversal": false,
       "velOverride": null,
       "isLocked": false,
