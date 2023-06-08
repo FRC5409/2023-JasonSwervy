@@ -46,6 +46,7 @@ public class Drivetrain extends SubsystemBase {
 
     // Robot heading PID
     private final PIDController m_headingController;
+    private double headingControllerSetpoint;
 
     // Shuffleboard
     private boolean debugMode = true;
@@ -78,7 +79,7 @@ public class Drivetrain extends SubsystemBase {
 
         // Robot heading PID
         m_headingController = new PIDController(kDrive.kHeadingP, kDrive.kHeadingI, kDrive.kHeadingD);
-        m_headingController.setTolerance(Math.toRadians(1));
+        m_headingController.setTolerance(Math.toRadians(3));
         m_headingController.enableContinuousInput(0, Math.toRadians(360));
 
         // Shuffleboard
@@ -118,7 +119,9 @@ public class Drivetrain extends SubsystemBase {
     }
 
     public double getHeading() {
-        return getRotation2d().getDegrees() % 360;
+        double heading = getRotation2d().getDegrees() % 360;
+        if (heading < 0) heading += 360;
+        return heading;
     }
 
     public SwerveDriveKinematics getKinematics() {
@@ -149,14 +152,17 @@ public class Drivetrain extends SubsystemBase {
 
         double currentAngle = Math.toRadians(getHeading());
         double rotation = manualRotation; // prioritize manual rotation
+        headingControllerSetpoint = (targetAngle == -1) ? headingControllerSetpoint : targetAngle; // set new setpoint if available, or use old setpoint
 
         if (rotation == 0) {
-            if (targetAngle == -1) rotation = 0; // no target angle
+            if (headingControllerSetpoint == -1) rotation = 0; // no target angle
             else {
-                m_headingController.setSetpoint(targetAngle);
+                m_headingController.setSetpoint(headingControllerSetpoint);
                 // if not at target angle, move to target angle
-                if (!m_headingController.atSetpoint())
+                if (Math.abs(headingControllerSetpoint - currentAngle) > m_headingController.getPositionTolerance()) // at setpoint, not using .atSetpoint() because that is not updated unless .calculate() is called
                     rotation = -m_headingController.calculate(currentAngle);
+                else
+                    headingControllerSetpoint = -1;
             }
         }
 

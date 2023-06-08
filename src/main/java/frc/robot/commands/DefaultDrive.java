@@ -12,8 +12,6 @@ public class DefaultDrive extends CommandBase {
     Drivetrain sys_drivetrain;
     CommandXboxController m_controller;
 
-    double targetAngle;
-
     SlewRateLimiter m_xSpeedSlewRateLimiter;
     SlewRateLimiter m_ySpeedSlewRateLimiter;
     SlewRateLimiter m_manualRotationSlewRateLimiter;
@@ -48,7 +46,7 @@ public class DefaultDrive extends CommandBase {
 
         double manualRotation = manualXRotation + manualYRotation;
 
-        targetAngle = getRotationTargetAngle(xRotation, yRotation);
+        double targetAngle = getRotationTargetAngle(xRotation, yRotation);
         if (manualRotation != 0) targetAngle = Math.toRadians(sys_drivetrain.getHeading());
 
         // Apply deadband and slew rate
@@ -79,7 +77,7 @@ public class DefaultDrive extends CommandBase {
     private double getRotationTargetAngle(double xRotation, double yRotation) {
 
         if (xRotation == 0 && yRotation == 0)
-            return targetAngle;
+            return -1;
         
         double angle = Math.atan2(-xRotation, -yRotation);
         if (angle < 0) angle += Math.toRadians(360);
