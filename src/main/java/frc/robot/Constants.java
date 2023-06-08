@@ -97,12 +97,10 @@ public final class Constants {
             BottomRight
         }
 
-        // TODO: Must be tuned
-        // https://docs.wpilib.org/en/stable/docs/software/advanced-controls/index.html
-        public static final double kDriveP                          = 0.015;
+        public static final double kDriveP                          = 0.05;
         public static final double kDriveI                          = 0;
         public static final double kDriveD                          = 0;
-        public static final double kDriveFF                         = 0.15;
+        public static final double kDriveFF                         = 0.22;
 
         public static final double kTurnP                           = 0.07;
         public static final double kTurnI                           = 0;
