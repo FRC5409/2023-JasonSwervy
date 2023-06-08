@@ -1,5 +1,7 @@
 package frc.robot.commands;
 
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.kDrive;
@@ -12,17 +14,17 @@ public class DefaultDrive extends CommandBase {
 
     double targetAngle;
 
-    // SlewRateLimiter m_xSpeedSlewRateLimiter;
-    // SlewRateLimiter m_ySpeedSlewRateLimiter;
-    // SlewRateLimiter m_rotationSlewRateLimiter;
+    SlewRateLimiter m_xSpeedSlewRateLimiter;
+    SlewRateLimiter m_ySpeedSlewRateLimiter;
+    SlewRateLimiter m_manualRotationSlewRateLimiter;
 
     public DefaultDrive(Drivetrain drivetrain, CommandXboxController controller) {
         sys_drivetrain = drivetrain;
         m_controller = controller;
 
-        // m_xSpeedSlewRateLimiter = new SlewRateLimiter(kDrive.kMaxDriveVelocity);
-        // m_ySpeedSlewRateLimiter = new SlewRateLimiter(kDrive.kMaxDriveVelocity);
-        // m_rotationSlewRateLimiter = new SlewRateLimiter(kDrive.kMaxTurnAngularAcceleration);
+        m_xSpeedSlewRateLimiter = new SlewRateLimiter(kDrive.kXSpeedSlewRate);
+        m_ySpeedSlewRateLimiter = new SlewRateLimiter(kDrive.kYSpeedSlewRate);
+        m_manualRotationSlewRateLimiter = new SlewRateLimiter(kDrive.kManualRotationSlewRate);
 
         addRequirements(drivetrain);
     }
@@ -37,14 +39,12 @@ public class DefaultDrive extends CommandBase {
 
         double xRotation = m_controller.getRightX();
         double yRotation = m_controller.getRightY();
+        // deadband for target angle
+        if (Math.abs(xRotation) < 0.2) xRotation = 0;
+        if (Math.abs(yRotation) < 0.2) yRotation = 0;
 
         double manualXRotation = -m_controller.getLeftTriggerAxis();
         double manualYRotation = m_controller.getRightTriggerAxis();
-
-        if (Math.abs(xSpeed) < 0.125) xSpeed = 0;
-        if (Math.abs(ySpeed) < 0.125) ySpeed = 0;
-        if (Math.abs(xRotation) < 0.2) xRotation = 0;
-        if (Math.abs(yRotation) < 0.2) yRotation = 0;
 
         double manualRotation = manualXRotation + manualYRotation;
 
@@ -52,9 +52,9 @@ public class DefaultDrive extends CommandBase {
         if (manualRotation != 0) targetAngle = Math.toRadians(sys_drivetrain.getHeading());
 
         // Apply deadband and slew rate
-        // xSpeed = m_xSpeedSlewRateLimiter.calculate(MathUtil.applyDeadband(xSpeed, kDrive.kXSpeedDeadband));
-        // ySpeed = m_ySpeedSlewRateLimiter.calculate(MathUtil.applyDeadband(ySpeed, kDrive.kYSpeedDeadband));
-        // rotation = m_rotationSlewRateLimiter.calculate(MathUtil.applyDeadband(rotation, kDrive.kRotationDeadband));
+        xSpeed = m_xSpeedSlewRateLimiter.calculate(MathUtil.applyDeadband(xSpeed, kDrive.kXSpeedDeadband));
+        ySpeed = m_ySpeedSlewRateLimiter.calculate(MathUtil.applyDeadband(ySpeed, kDrive.kYSpeedDeadband));
+        manualRotation = m_manualRotationSlewRateLimiter.calculate(MathUtil.applyDeadband(manualRotation, kDrive.kManualRotationDeadband));
 
         // Multiply/scale from percentage to speed
         xSpeed *= kDrive.kMaxDriveVelocity; // metres per second

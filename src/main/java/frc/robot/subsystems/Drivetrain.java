@@ -132,9 +132,17 @@ public class Drivetrain extends SubsystemBase {
     public void drive(double xSpeed, double ySpeed, double targetAngle, double manualRotation) {
 
         double currentAngle = Math.toRadians(getHeading());
-        double rotation = manualRotation;
-        if (rotation == 0)
-            rotation = (targetAngle == -1) ? 0 : -m_headingController.calculate(currentAngle, targetAngle);
+        double rotation = manualRotation; // prioritize manual rotation
+
+        if (rotation == 0) {
+            if (targetAngle == -1) rotation = 0; // no target angle
+            else {
+                m_headingController.setSetpoint(targetAngle);
+                // if not at target angle, move to target angle
+                if (!m_headingController.atSetpoint())
+                    rotation = -m_headingController.calculate(currentAngle);
+            }
+        }
 
         // Get swerve module desired states
         SwerveModuleState[] swerveModuleStates = m_kinematics.toSwerveModuleStates(
