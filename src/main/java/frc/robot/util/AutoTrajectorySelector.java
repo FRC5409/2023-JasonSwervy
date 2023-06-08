@@ -57,6 +57,10 @@ public class AutoTrajectorySelector {
         }
     }
 
+    public SendableChooser<PathPlannerTrajectory> getSendableChooser() {
+        return trajectoryChooser;
+    }
+
     /**
      * Get the chosen trajectory from the SendableChooser on Shuffleboard.
      * This is used in RobotContainer.java to create the autonomous command.

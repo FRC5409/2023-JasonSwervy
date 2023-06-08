@@ -67,6 +67,7 @@ public class RobotContainer {
 
         // Autonomous
         m_autoSelector = new AutoTrajectorySelector();
+        sb_driveteamTab.add(m_autoSelector.getSendableChooser());
 
         // Configure the trigger bindings
         configureBindings();
