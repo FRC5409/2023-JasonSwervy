@@ -6,10 +6,12 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.kControllers;
-import frc.robot.commands.DefaultDrive;
+import frc.robot.commands.ManualDrive;
+import frc.robot.commands.SetpointDrive;
 import frc.robot.subsystems.Drivetrain;
 
 /**
@@ -31,7 +33,10 @@ public class RobotContainer {
     public final Drivetrain sys_drivetrain;
 
     // Commands
-    private final DefaultDrive cmd_defaultDrive;
+    private final Command cmd_defaultDrive;
+
+    private final ManualDrive cmd_manualDrive;
+    private final SetpointDrive cmd_setpointDrive;
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -46,7 +51,14 @@ public class RobotContainer {
         sys_drivetrain = new Drivetrain();
 
         // Commands
-        cmd_defaultDrive = new DefaultDrive(sys_drivetrain, m_primaryController);
+        cmd_manualDrive = new ManualDrive(sys_drivetrain, m_primaryController);
+        cmd_setpointDrive = new SetpointDrive(sys_drivetrain, m_primaryController);
+
+        cmd_defaultDrive = new RepeatCommand(
+            cmd_manualDrive.andThen(
+                cmd_setpointDrive
+            )
+        );
 
         sys_drivetrain.setDefaultCommand(cmd_defaultDrive);
 

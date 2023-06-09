@@ -2,8 +2,6 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.sensors.Pigeon2.AxisDirection;
 import com.ctre.phoenix.sensors.WPI_Pigeon2;
-
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -43,10 +41,6 @@ public class Drivetrain extends SubsystemBase {
 
     private final Field2d m_field;
 
-    // Robot heading PID
-    private final PIDController m_headingController;
-    private double headingControllerSetpoint;
-
     // Shuffleboard
     private boolean debugMode = true;
     private ShuffleboardTab sb_drivetrainTab;
@@ -76,10 +70,7 @@ public class Drivetrain extends SubsystemBase {
         
         m_field = new Field2d();
 
-        // Robot heading PID
-        m_headingController = new PIDController(kDrive.kHeadingP, kDrive.kHeadingI, kDrive.kHeadingD);
-        m_headingController.setTolerance(Math.toRadians(3));
-        m_headingController.enableContinuousInput(0, Math.toRadians(360));
+        
 
         // Shuffleboard
         if (debugMode) {
@@ -132,32 +123,11 @@ public class Drivetrain extends SubsystemBase {
      * @param targetAngle target heading
      * @param rotation LT RT rotation (manual)
      */
-    public void drive(double xSpeed, double ySpeed, double targetAngle, double manualRotation) {
-
-        double currentAngle = Math.toRadians(getHeading());
-        double rotation = manualRotation; // prioritize manual rotation
-        headingControllerSetpoint = (targetAngle == -1) ? headingControllerSetpoint : targetAngle; // set new setpoint if available, or use old setpoint
-
-        if (rotation == 0) {
-            if (headingControllerSetpoint == -1) rotation = 0; // no target angle
-            else {
-                m_headingController.setSetpoint(headingControllerSetpoint);
-                // if not at target angle, move to target angle
-                if (Math.abs(headingControllerSetpoint - currentAngle) > m_headingController.getPositionTolerance()) // at setpoint, not using .atSetpoint() because that is not updated unless .calculate() is called
-                    rotation = -m_headingController.calculate(currentAngle);
-                else
-                    headingControllerSetpoint = -1;
-            }
-        }
-
+    public void drive(double xSpeed, double ySpeed, double rotation) {
         // Get swerve module desired states
         SwerveModuleState[] swerveModuleStates = m_kinematics.toSwerveModuleStates(
             ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rotation, m_gyro.getRotation2d()));
 
-        // for (int i = 0; i < swerveModuleStates.length; i++) {
-        //     SmartDashboard.putNumber("Module " + i, swerveModuleStates[i].speedMetersPerSecond);
-        // }
-        
         // Limit speeds
         SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, kDrive.kMaxDriveVelocity);
 
