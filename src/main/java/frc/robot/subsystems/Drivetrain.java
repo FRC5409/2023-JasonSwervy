@@ -46,7 +46,7 @@ public class Drivetrain extends SubsystemBase {
 
     // Robot heading PID
     private final PIDController m_headingController;
-    private double headingControllerSetpoint;
+    private double headingControllerSetpoint = -1; // defaulted to -1 to start without a setpoint
 
     // Shuffleboard
     private boolean debugMode = true;
