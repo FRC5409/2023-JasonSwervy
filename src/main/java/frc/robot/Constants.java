@@ -69,9 +69,9 @@ public final class Constants {
         public static final double kTargetHeadingDeadband           = 0.25;
         public static final double kManualRotationDeadband          = 0.2;
 
-        public static final double kXSpeedSlewRate                  = 2.4;
-        public static final double kYSpeedSlewRate                  = 2.4;
-        public static final double kManualRotationSlewRate          = 2.4;
+        public static final double kXSpeedSlewRate                  = 2.2;
+        public static final double kYSpeedSlewRate                  = 2.2;
+        public static final double kManualRotationSlewRate          = 2.2;
 
         public static final double kHeadingSnap                     = Math.toRadians(45);
 
