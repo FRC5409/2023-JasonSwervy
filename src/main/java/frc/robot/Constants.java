@@ -54,9 +54,6 @@ public final class Constants {
         public static final double kDriveGearRatio                  = 6.75;
         public static final double kTurnGearRatio                   = 150.0 / 7.0;
 
-        // public static final double kMaxDriveVelocity                = 4; // metres per second
-        // public static final double kMaxTurnAngularVelocity          = 2 * Math.toRadians(360); // rotation per second
-        // public static final double kMaxTurnAngularAcceleration      = 2 * Math.toRadians(360); // rotation per second squared
         public static final double kMaxDriveVelocity                = 4.56; // metres per second
         public static final double kMaxTurnAngularVelocity          = 10; // rotation per second
         public static final double kMaxTurnAngularAcceleration      = 2 * Math.toRadians(360); // rotation per second squared
