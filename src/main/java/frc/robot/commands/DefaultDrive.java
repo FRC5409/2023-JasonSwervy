@@ -47,7 +47,6 @@ public class DefaultDrive extends CommandBase {
         double manualRotation = manualXRotation + manualYRotation;
 
         double targetAngle = getRotationTargetAngle(xRotation, yRotation);
-        if (manualRotation != 0) targetAngle = Math.toRadians(sys_drivetrain.getHeading());
 
         // Apply deadband and slew rate
         xSpeed = m_xSpeedSlewRateLimiter.calculate(MathUtil.applyDeadband(xSpeed, kDrive.kXSpeedDeadband));
