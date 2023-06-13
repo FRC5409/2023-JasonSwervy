@@ -66,6 +66,7 @@ public final class Constants {
 
         public static final double kXSpeedDeadband                  = 0.125;
         public static final double kYSpeedDeadband                  = 0.125;
+        public static final double kTargetHeadingDeadband           = 0.25;
         public static final double kManualRotationDeadband          = 0.2;
 
         public static final double kXSpeedSlewRate                  = 2.4;
@@ -97,7 +98,7 @@ public final class Constants {
             BottomRight
         }
 
-        public static final double kDriveP                          = 0.05;
+        public static final double kDriveP                          = 0.04;
         public static final double kDriveI                          = 0;
         public static final double kDriveD                          = 0;
         public static final double kDriveFF                         = 0.22;

@@ -38,8 +38,8 @@ public class DefaultDrive extends CommandBase {
         double xRotation = m_controller.getRightX();
         double yRotation = m_controller.getRightY();
         // deadband for target angle
-        if (Math.abs(xRotation) < 0.2) xRotation = 0;
-        if (Math.abs(yRotation) < 0.2) yRotation = 0;
+        if (Math.abs(xRotation) < kDrive.kTargetHeadingDeadband) xRotation = 0;
+        if (Math.abs(yRotation) < kDrive.kTargetHeadingDeadband) yRotation = 0;
 
         double manualXRotation = -m_controller.getLeftTriggerAxis();
         double manualYRotation = m_controller.getRightTriggerAxis();
