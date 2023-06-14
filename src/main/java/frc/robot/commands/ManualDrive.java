@@ -48,7 +48,7 @@ public class ManualDrive extends CommandBase {
         // Multiply/scale from percentage to speed
         xSpeed *= kDrive.kMaxDriveVelocity; // metres per second
         ySpeed *= kDrive.kMaxDriveVelocity; // metres per second
-        manualRotation *= (kDrive.kMaxTurnAngularVelocity / 2); // radians
+        manualRotation *= (kDrive.kMaxTurnAngularVelocity); // radians
 
         sys_drivetrain.drive(xSpeed, ySpeed, manualRotation);
     }
