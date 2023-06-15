@@ -46,7 +46,12 @@ public class RobotContainer {
         sys_drivetrain = new Drivetrain();
 
         // Commands
-        cmd_defaultDrive = new DefaultDrive(sys_drivetrain, m_primaryController);
+        cmd_defaultDrive = new DefaultDrive(
+            sys_drivetrain,
+            () -> m_primaryController.getLeftX(),
+            () -> m_primaryController.getLeftY(),
+            () -> m_primaryController.getRightX()
+        );
 
         sys_drivetrain.setDefaultCommand(cmd_defaultDrive);
 
@@ -70,7 +75,7 @@ public class RobotContainer {
      */
     private void configureBindings() {
         m_primaryController.a()
-            .onTrue(Commands.runOnce(() -> sys_drivetrain.resetAllEncoders()));
+            .onTrue(Commands.runOnce(() -> sys_drivetrain.zeroGyroscope()));
     }
 
     /**

@@ -7,10 +7,10 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.RepeatCommand;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
+// import edu.wpi.first.wpilibj2.command.Commands;
+// import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+// import edu.wpi.first.wpilibj2.command.RepeatCommand;
+// import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -34,26 +34,26 @@ public class Robot extends TimedRobot {
     m_robotContainer = new RobotContainer();
 
     // Coast mode after 3 seconds
-    new Trigger(this::isEnabled)
-      .negate()
-      .debounce(5)
-      .onTrue(
-        Commands.runOnce(() -> m_robotContainer.sys_drivetrain.setBrakeMode(false)) 
-        .ignoringDisable(true)
-      );
+    // new Trigger(this::isEnabled)
+    //   .negate()
+    //   .debounce(5)
+    //   .onTrue(
+    //     Commands.runOnce(() -> m_robotContainer.sys_drivetrain.setBrakeMode(false)) 
+    //     .ignoringDisable(true)
+    //   );
     
     // Re-zero encoders every second, while disabled
-    new Trigger(this::isEnabled)
-      .negate()
-      .whileTrue(
-        new RepeatCommand(
-          new ParallelCommandGroup(
-            Commands.runOnce(() -> m_robotContainer.sys_drivetrain.resetAllEncoders()),
-            Commands.waitSeconds(1)
-              .ignoringDisable(true)
-          ).ignoringDisable(true)
-        ).ignoringDisable(true)
-      );
+    // new Trigger(this::isEnabled)
+    //   .negate()
+    //   .whileTrue(
+    //     new RepeatCommand(
+    //       new ParallelCommandGroup(
+    //         Commands.runOnce(() -> m_robotContainer.sys_drivetrain.resetAllEncoders()),
+    //         Commands.waitSeconds(1)
+    //           .ignoringDisable(true)
+    //       ).ignoringDisable(true)
+    //     ).ignoringDisable(true)
+    //   );
   }
 
   /**
@@ -83,9 +83,9 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
 
-    m_robotContainer.sys_drivetrain.setBrakeMode(true);
-    m_robotContainer.sys_drivetrain.resetAllEncoders();
-    m_robotContainer.sys_drivetrain.zeroHeading();
+    // m_robotContainer.sys_drivetrain.setBrakeMode(true);
+    // m_robotContainer.sys_drivetrain.resetAllEncoders();
+    m_robotContainer.sys_drivetrain.zeroGyroscope();
 
     
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
@@ -110,8 +110,8 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.cancel();
     }
 
-    m_robotContainer.sys_drivetrain.setBrakeMode(true);
-    m_robotContainer.sys_drivetrain.resetAllEncoders();
+    // m_robotContainer.sys_drivetrain.setBrakeMode(true);
+    // m_robotContainer.sys_drivetrain.resetAllEncoders();
   }
 
   /** This function is called periodically during operator control. */
