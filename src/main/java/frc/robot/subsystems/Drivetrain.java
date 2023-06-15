@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.sensors.WPI_Pigeon2;
+import com.swervedrivespecialties.swervelib.Mk4ModuleConfiguration;
 import com.swervedrivespecialties.swervelib.Mk4iSwerveModuleHelper;
 import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
 import com.swervedrivespecialties.swervelib.SwerveModule;
@@ -114,37 +115,46 @@ public class Drivetrain extends SubsystemBase {
 
     // By default we will use Falcon 500s in standard configuration. But if you use a different configuration or motors
     // you MUST change it. If you do not, your code will crash on startup.
+
+    Mk4ModuleConfiguration moduleConfig =  new Mk4ModuleConfiguration();
+    moduleConfig.setDriveCurrentLimit(40);
+    moduleConfig.setSteerCurrentLimit(30);
+
     m_frontLeftModule = Mk4iSwerveModuleHelper.createNeo(
+            moduleConfig,
             Mk4iSwerveModuleHelper.GearRatio.L2,
             FRONT_LEFT_MODULE_DRIVE_MOTOR,
             FRONT_LEFT_MODULE_STEER_MOTOR,
             FRONT_LEFT_MODULE_STEER_ENCODER,
-            FRONT_LEFT_MODULE_STEER_OFFSET
+            Math.toRadians(FRONT_LEFT_MODULE_STEER_OFFSET)
     );
 
     // We will do the same for the other modules
     m_frontRightModule = Mk4iSwerveModuleHelper.createNeo(
+            moduleConfig,
             Mk4iSwerveModuleHelper.GearRatio.L2,
             FRONT_RIGHT_MODULE_DRIVE_MOTOR,
             FRONT_RIGHT_MODULE_STEER_MOTOR,
             FRONT_RIGHT_MODULE_STEER_ENCODER,
-            FRONT_RIGHT_MODULE_STEER_OFFSET
+            Math.toRadians(FRONT_RIGHT_MODULE_STEER_OFFSET)
     );
 
     m_backLeftModule = Mk4iSwerveModuleHelper.createNeo(
+            moduleConfig,
             Mk4iSwerveModuleHelper.GearRatio.L2,
             BACK_LEFT_MODULE_DRIVE_MOTOR,
             BACK_LEFT_MODULE_STEER_MOTOR,
             BACK_LEFT_MODULE_STEER_ENCODER,
-            BACK_LEFT_MODULE_STEER_OFFSET
+            Math.toRadians(BACK_LEFT_MODULE_STEER_OFFSET)
     );
 
     m_backRightModule = Mk4iSwerveModuleHelper.createNeo(
+            moduleConfig,
             Mk4iSwerveModuleHelper.GearRatio.L2,
             BACK_RIGHT_MODULE_DRIVE_MOTOR,
             BACK_RIGHT_MODULE_STEER_MOTOR,
             BACK_RIGHT_MODULE_STEER_ENCODER,
-            BACK_RIGHT_MODULE_STEER_OFFSET
+            Math.toRadians(BACK_RIGHT_MODULE_STEER_OFFSET)
     );
   }
 
@@ -157,7 +167,7 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public Rotation2d getGyroscopeRotation() {
-    return Rotation2d.fromDegrees(m_pigeon.getAngle());
+    return m_pigeon.getRotation2d();
   }
 
   public void drive(ChassisSpeeds chassisSpeeds) {
