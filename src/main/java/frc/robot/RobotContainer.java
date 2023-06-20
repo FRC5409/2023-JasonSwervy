@@ -4,13 +4,19 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.PathPlannerTrajectory;
+
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.kControllers;
 import frc.robot.commands.DefaultDrive;
+import frc.robot.commands.auto.FollowTrajectory;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.util.AutoTrajectorySelector;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -33,6 +39,12 @@ public class RobotContainer {
     // Commands
     private final DefaultDrive cmd_defaultDrive;
 
+    // Shuffleboard
+    public final ShuffleboardTab sb_driveteamTab;
+
+    // Autonomous
+    private final AutoTrajectorySelector m_autoSelector;
+
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
@@ -49,6 +61,13 @@ public class RobotContainer {
         cmd_defaultDrive = new DefaultDrive(sys_drivetrain, m_primaryController);
 
         sys_drivetrain.setDefaultCommand(cmd_defaultDrive);
+
+        // Shuffleboard
+        sb_driveteamTab = Shuffleboard.getTab("Drive team");
+
+        // Autonomous
+        m_autoSelector = new AutoTrajectorySelector();
+        sb_driveteamTab.add(m_autoSelector.getSendableChooser());
 
         // Configure the trigger bindings
         configureBindings();
@@ -79,7 +98,8 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        // An example command will be run in autonomous
-        return null;
+        // Get selected auto trajectory
+        PathPlannerTrajectory chosenTrajectory = m_autoSelector.getChosenTrajectory();
+        return new FollowTrajectory(chosenTrajectory, true, sys_drivetrain);
     }
 }

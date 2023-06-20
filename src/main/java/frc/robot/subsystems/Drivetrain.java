@@ -4,6 +4,7 @@ import com.ctre.phoenix.sensors.Pigeon2.AxisDirection;
 import com.ctre.phoenix.sensors.WPI_Pigeon2;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -45,7 +46,7 @@ public class Drivetrain extends SubsystemBase {
 
     // Robot heading PID
     private final PIDController m_headingController;
-    private double headingControllerSetpoint;
+    private double headingControllerSetpoint = -1; // defaulted to -1 to start without a setpoint
 
     // Shuffleboard
     private boolean debugMode = true;
@@ -113,15 +114,30 @@ public class Drivetrain extends SubsystemBase {
         return m_gyro.getRotation2d();
     }
 
+    public Pose2d getPose() {
+        return m_odometry.getPoseMeters();
+    }
+
     public double getHeading() {
         double heading = getRotation2d().getDegrees() % 360;
         if (heading < 0) heading += 360;
         return heading;
     }
 
+    public SwerveDriveKinematics getKinematics() {
+        return m_kinematics;
+    }
+
+    public SwerveModulePosition[] getSwerveModulePositions() {
+        return new SwerveModulePosition[] {mod_frontLeft.getPosition(), mod_frontRight.getPosition(), mod_backLeft.getPosition(), mod_backRight.getPosition()};
+    }
+
     public void updateOdometry() {
-        m_odometry.update(m_gyro.getRotation2d(),
-            new SwerveModulePosition[] {mod_frontLeft.getPosition(), mod_frontRight.getPosition(), mod_backLeft.getPosition(), mod_backRight.getPosition()});
+        m_odometry.update(m_gyro.getRotation2d(), getSwerveModulePositions());
+    }
+
+    public void resetOdometry(Pose2d pose) {
+        m_odometry.resetPosition(getRotation2d(), getSwerveModulePositions(), pose);
     }
 
     /**
