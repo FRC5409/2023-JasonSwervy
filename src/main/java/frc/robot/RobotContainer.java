@@ -64,10 +64,8 @@ public class RobotContainer {
 
         // Shuffleboard
         sb_driveteamTab = Shuffleboard.getTab("Drive team");
-
-        // Autonomous
         m_autoSelector = new AutoTrajectorySelector();
-        sb_driveteamTab.add(m_autoSelector.getSendableChooser());
+        addShuffleboardItems();
 
         // Configure the trigger bindings
         configureBindings();
@@ -90,6 +88,21 @@ public class RobotContainer {
     private void configureBindings() {
         m_primaryController.a()
             .onTrue(Commands.runOnce(() -> sys_drivetrain.resetAllEncoders()));
+    }
+
+    private void addShuffleboardItems() {
+
+        // Re-zero
+        sb_driveteamTab.add("Re-zero encoders", Commands.runOnce(sys_drivetrain::resetAllEncoders, sys_drivetrain))
+            .withPosition(0, 0);
+        sb_driveteamTab.add("Re-zero gyro",     Commands.runOnce(sys_drivetrain::zeroHeading, sys_drivetrain))
+            .withPosition(1, 0);
+
+        // Autonomous
+        sb_driveteamTab.add("Choose auto", m_autoSelector.getSendableChooser())
+            .withPosition(0, 1)
+            .withSize(3, 1);
+
     }
 
     /**
