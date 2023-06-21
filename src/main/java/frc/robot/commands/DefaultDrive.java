@@ -20,10 +20,6 @@ public class DefaultDrive extends CommandBase {
         sys_drivetrain = drivetrain;
         m_controller = controller;
 
-        m_xSpeedSlewRateLimiter = new SlewRateLimiter(kDrive.kXSpeedSlewRate);
-        m_ySpeedSlewRateLimiter = new SlewRateLimiter(kDrive.kYSpeedSlewRate);
-        m_manualRotationSlewRateLimiter = new SlewRateLimiter(kDrive.kManualRotationSlewRate);
-
         addRequirements(drivetrain);
     }
 
@@ -49,9 +45,9 @@ public class DefaultDrive extends CommandBase {
         double targetAngle = getRotationTargetAngle(xRotation, yRotation);
 
         // Apply deadband and slew rate
-        xSpeed = m_xSpeedSlewRateLimiter.calculate(MathUtil.applyDeadband(xSpeed, kDrive.kXSpeedDeadband));
-        ySpeed = m_ySpeedSlewRateLimiter.calculate(MathUtil.applyDeadband(ySpeed, kDrive.kYSpeedDeadband));
-        manualRotation = m_manualRotationSlewRateLimiter.calculate(MathUtil.applyDeadband(manualRotation, kDrive.kManualRotationDeadband));
+        xSpeed = MathUtil.applyDeadband(xSpeed, kDrive.kXSpeedDeadband);
+        ySpeed = MathUtil.applyDeadband(ySpeed, kDrive.kYSpeedDeadband);
+        manualRotation = MathUtil.applyDeadband(manualRotation, kDrive.kManualRotationDeadband);
 
         // Multiply/scale from percentage to speed
         xSpeed *= kDrive.kMaxDriveVelocity; // metres per second

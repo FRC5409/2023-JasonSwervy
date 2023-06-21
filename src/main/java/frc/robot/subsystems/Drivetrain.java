@@ -221,6 +221,20 @@ public class Drivetrain extends SubsystemBase {
         mod_backRight.stopMotors();
     }
 
+    public void enableRampRate(boolean enable) {
+        mod_frontLeft.enableRampRate(enable);
+        mod_frontRight.enableRampRate(enable);
+        mod_backLeft.enableRampRate(enable);
+        mod_backRight.enableRampRate(enable);
+    }
+
+    public boolean isRampRateEnabled() {
+        return mod_frontLeft.isRampRateEnabled()
+            || mod_frontRight.isRampRateEnabled()
+            || mod_backLeft.isRampRateEnabled()
+            || mod_backRight.isRampRateEnabled();
+    }
+
     @Override
     public void periodic() {
         updateOdometry();

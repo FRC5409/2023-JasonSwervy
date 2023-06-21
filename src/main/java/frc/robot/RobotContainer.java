@@ -113,6 +113,7 @@ public class RobotContainer {
     public Command getAutonomousCommand() {
         // Get selected auto trajectory
         PathPlannerTrajectory chosenTrajectory = m_autoSelector.getChosenTrajectory();
+
         return new FollowTrajectory(chosenTrajectory, true, sys_drivetrain);
     }
 }

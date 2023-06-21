@@ -4,6 +4,7 @@ import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.commands.PPSwerveControllerCommand;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants.kDrive;
@@ -21,6 +22,9 @@ public class FollowTrajectory extends SequentialCommandGroup {
     public FollowTrajectory(PathPlannerTrajectory trajectory, boolean isFirstPath, Drivetrain sys_drivetrain) {
         addCommands(
 
+            // Disable ramp rate
+            new InstantCommand(() -> sys_drivetrain.enableRampRate(false)),
+
             // Reset odometry, if first path
             new InstantCommand(() -> {
                 if (isFirstPath)
@@ -36,7 +40,10 @@ public class FollowTrajectory extends SequentialCommandGroup {
                 new PIDController(kDrive.kTurnP, kDrive.kTurnI, kDrive.kTurnD), // Rotation controller
                 sys_drivetrain::setModulesStates,
                 sys_drivetrain // require Drivetrain
-            )
+            ),
+
+            // Enable ramp rate
+            new InstantCommand(() -> sys_drivetrain.enableRampRate(true))
             
         );
     }

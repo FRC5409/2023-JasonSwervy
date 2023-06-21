@@ -66,9 +66,7 @@ public final class Constants {
         public static final double kTargetHeadingDeadband           = 0.25;
         public static final double kManualRotationDeadband          = 0.2;
 
-        public static final double kXSpeedSlewRate                  = 2.2;
-        public static final double kYSpeedSlewRate                  = 2.2;
-        public static final double kManualRotationSlewRate          = 2.2;
+        public static final double kDriveRampRate                   = 0.6;
 
         public static final double kHeadingSnap                     = Math.toRadians(45);
 
@@ -100,7 +98,7 @@ public final class Constants {
         public static final double kDriveD                          = 0;
         public static final double kDriveFF                         = 0.22;
 
-        public static final double kTurnP                           = 0.07;
+        public static final double kTurnP                           = 3;
         public static final double kTurnI                           = 0;
         public static final double kTurnD                           = 0;
         public static final double kTurnFF                          = 0;

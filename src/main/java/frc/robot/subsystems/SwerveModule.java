@@ -80,6 +80,7 @@ public class SwerveModule extends SubsystemBase {
         mot_drive.restoreFactoryDefaults();
         mot_drive.setInverted(driveMotorInverted);
         mot_drive.setSmartCurrentLimit(kDrive.kDriveMotorCurrentLimit);
+        enableRampRate(true);
         m_drivePIDController.setP(kDrive.kDriveP);
         m_drivePIDController.setI(kDrive.kDriveI);
         m_drivePIDController.setD(kDrive.kDriveD);
@@ -228,6 +229,14 @@ public class SwerveModule extends SubsystemBase {
             mot_drive.setIdleMode(IdleMode.kCoast);
             mot_turn.setIdleMode(IdleMode.kCoast);
         }
+    }
+
+    public void enableRampRate(boolean enable) {
+        mot_drive.setClosedLoopRampRate(enable ? kDrive.kDriveRampRate : 0);
+    }
+
+    public boolean isRampRateEnabled() {
+        return mot_drive.getClosedLoopRampRate() > 0;
     }
 
     @Override
