@@ -217,6 +217,14 @@ public class SwerveModule extends SubsystemBase {
         return enc_turn.getPosition();
     }
 
+    public void setTurnDir(double radians) {
+        m_turnPIDController.setReference(radians, ControlType.kPosition);
+    }
+
+    public void setDrive(double speed) {
+        mot_drive.set(speed);
+    }
+
     /**
      * Set to brake mode, or coast mode.
      * @param brakeMode whether to set brake mode, or coast mode
@@ -227,6 +235,22 @@ public class SwerveModule extends SubsystemBase {
             mot_turn.setIdleMode(IdleMode.kBrake);
         } else {
             mot_drive.setIdleMode(IdleMode.kCoast);
+            mot_turn.setIdleMode(IdleMode.kCoast);
+        }
+    }
+
+    public void setDriveBrakeMode(boolean brakeMode) {
+        if (brakeMode) {
+            mot_drive.setIdleMode(IdleMode.kBrake);
+        } else {
+            mot_drive.setIdleMode(IdleMode.kCoast);
+        }
+    }
+
+    public void setTurnBrakeMode(boolean brakeMode) {
+        if (brakeMode) {
+            mot_turn.setIdleMode(IdleMode.kBrake);
+        } else {
             mot_turn.setIdleMode(IdleMode.kCoast);
         }
     }

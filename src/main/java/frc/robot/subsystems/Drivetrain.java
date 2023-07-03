@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.sensors.Pigeon2.AxisDirection;
 import com.ctre.phoenix.sensors.WPI_Pigeon2;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -21,6 +22,7 @@ import frc.robot.Constants.kCANID;
 import frc.robot.Constants.kDrive;
 import frc.robot.Constants.kDrive.Location;
 import frc.robot.Constants.kDrive.kCANCoder;
+import frc.robot.commands.SwerveSafetys.LockWheelDir;
 import frc.robot.Constants.kRobot;
 
 public class Drivetrain extends SubsystemBase {
@@ -48,10 +50,11 @@ public class Drivetrain extends SubsystemBase {
     private final PIDController m_headingController;
     private double headingControllerSetpoint = -1; // defaulted to -1 to start without a setpoint
 
+    private boolean isSwerve = true;
+
     // Shuffleboard
     private boolean debugMode = true;
-    private ShuffleboardTab sb_drivetrainTab;
-    
+    private ShuffleboardTab sb_drivetrainTab;    
 
     public Drivetrain() {
 
@@ -102,8 +105,7 @@ public class Drivetrain extends SubsystemBase {
             sb_drivetrainTab.addNumber("POS Back left",        () -> mod_backLeft.getPosition().distanceMeters)              .withPosition(2, 3);
             sb_drivetrainTab.addNumber("POS Back right",       () -> mod_backRight.getPosition().distanceMeters)             .withPosition(3, 3);
             sb_drivetrainTab.addNumber("GYRO Heading",         this::getHeading)                                             .withPosition(5, 0);
-        }
-        
+        }        
     }
 
     public void zeroHeading() {
@@ -182,6 +184,41 @@ public class Drivetrain extends SubsystemBase {
 
     }
 
+    public void drive(double xSpeed, double zRotation) {
+        xSpeed = MathUtil.clamp(xSpeed, -1.0, 1.0);
+        zRotation = MathUtil.clamp(zRotation, -1.0, 1.0);
+        
+        // Square the inputs (while preserving the sign) to increase fine control
+        // while permitting full power.
+        xSpeed = Math.copySign(xSpeed * xSpeed, xSpeed);
+        zRotation = Math.copySign(zRotation * zRotation, zRotation);
+        
+        double leftSpeed = xSpeed - zRotation;
+        double rightSpeed = xSpeed + zRotation;
+        
+        // Find the maximum possible value of (throttle + turn) along the vector
+        // that the joystick is pointing, then desaturate the wheel speeds
+        double greaterInput = Math.max(Math.abs(xSpeed), Math.abs(zRotation));
+        double lesserInput = Math.min(Math.abs(xSpeed), Math.abs(zRotation));
+
+        if (greaterInput == 0.0) {
+          mod_backLeft.setDrive(0.0);
+          mod_backRight.setDrive(0.0);
+          mod_frontLeft.setDrive(0.0);
+          mod_frontRight.setDrive(0.0);
+          return;
+        }
+
+        double saturatedInput = (greaterInput + lesserInput) / greaterInput;
+        leftSpeed /= saturatedInput;
+        rightSpeed /= saturatedInput;
+    
+        mod_backLeft.setDrive(leftSpeed);
+        mod_backRight.setDrive(rightSpeed);
+        mod_frontLeft.setDrive(leftSpeed);
+        mod_frontRight.setDrive(rightSpeed);
+    }
+
     /**
      * Set swerve module states.
      * @param states array of 4 SwerveModuleStates
@@ -210,6 +247,50 @@ public class Drivetrain extends SubsystemBase {
         mod_backLeft.setBrakeMode(brakeMode);
         mod_backRight.setBrakeMode(brakeMode);
     }
+
+    /**
+     * Set to brake mode, or coast mode.
+     * @param brakeMode whether to set brake mode, or coast mode
+     */
+    public void setDriveBrakeMode(boolean brakeMode) {
+        mod_frontLeft.setDriveBrakeMode(brakeMode);
+        mod_frontRight.setDriveBrakeMode(brakeMode);
+        mod_backLeft.setDriveBrakeMode(brakeMode);
+        mod_backRight.setDriveBrakeMode(brakeMode);
+    }
+
+     /**
+     * Set to brake mode, or coast mode.
+     * @param brakeMode whether to set brake mode, or coast mode
+     */
+    public void setTurnBrakeMode(boolean brakeMode) {
+        mod_frontLeft.setTurnBrakeMode(brakeMode);
+        mod_frontRight.setTurnBrakeMode(brakeMode);
+        mod_backLeft.setTurnBrakeMode(brakeMode);
+        mod_backRight.setTurnBrakeMode(brakeMode);
+    }
+
+    public void setTurnAngle(double radians) {
+        mod_frontLeft.setTurnDir(radians);
+        mod_frontRight.setTurnDir(radians);
+        mod_backLeft.setTurnDir(radians);
+        mod_backRight.setTurnDir(radians);
+    }
+
+    public void setTank() {
+        isSwerve = false;
+        if (!mod_backLeft.isRampRateEnabled()) {
+            mod_frontLeft.enableRampRate(true);
+            mod_frontRight.enableRampRate(true);
+            mod_backLeft.enableRampRate(true);
+            mod_backRight.enableRampRate(true);
+        }
+    }
+
+    public boolean isSwerve() {
+        return isSwerve;
+    }
+
 
     /**
      * Stop all motors.

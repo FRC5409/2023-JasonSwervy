@@ -5,7 +5,6 @@
 package frc.robot;
 
 import com.pathplanner.lib.PathPlannerTrajectory;
-
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -14,6 +13,8 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.kControllers;
 import frc.robot.commands.DefaultDrive;
+import frc.robot.commands.SwerveSafetys.LockWheelDir;
+import frc.robot.commands.SwerveSafetys.SetDriveCoast;
 import frc.robot.commands.auto.FollowTrajectory;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.util.AutoTrajectorySelector;
@@ -45,6 +46,9 @@ public class RobotContainer {
     // Autonomous
     private final AutoTrajectorySelector m_autoSelector;
 
+    //ShuffleBoard
+    private final ShuffleboardTab sb_brokenTab;
+
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
@@ -66,6 +70,10 @@ public class RobotContainer {
         sb_driveteamTab = Shuffleboard.getTab("Drive team");
         m_autoSelector = new AutoTrajectorySelector();
         addShuffleboardItems();
+
+        sb_brokenTab = Shuffleboard.getTab("Broken");
+        sb_brokenTab.add("LockWheelDir", new LockWheelDir(sys_drivetrain, m_primaryController));
+        sb_brokenTab.add("Set Coast Mode", new SetDriveCoast(sys_drivetrain));
 
         // Configure the trigger bindings
         configureBindings();
