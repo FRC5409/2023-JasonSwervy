@@ -10,10 +10,12 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.kControllers;
-import frc.robot.commands.DefaultDrive;
+import frc.robot.commands.SwerveDrive;
+import frc.robot.commands.TankDrive;
 import frc.robot.commands.auto.FollowTrajectory;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.util.AutoTrajectorySelector;
@@ -37,7 +39,8 @@ public class RobotContainer {
     public final Drivetrain sys_drivetrain;
 
     // Commands
-    private final DefaultDrive cmd_defaultDrive;
+    private final SwerveDrive cmd_swerveDrive;
+    private final TankDrive cmd_tankDrive;
 
     // Shuffleboard
     public final ShuffleboardTab sb_driveteamTab;
@@ -58,9 +61,10 @@ public class RobotContainer {
         sys_drivetrain = new Drivetrain();
 
         // Commands
-        cmd_defaultDrive = new DefaultDrive(sys_drivetrain, m_primaryController);
+        cmd_swerveDrive = new SwerveDrive(sys_drivetrain, m_primaryController);
+        cmd_tankDrive = new TankDrive(sys_drivetrain, m_primaryController);
 
-        sys_drivetrain.setDefaultCommand(cmd_defaultDrive);
+        sys_drivetrain.setDefaultCommand(new ConditionalCommand(cmd_swerveDrive, cmd_tankDrive, () -> sys_drivetrain.isTank()));
 
         // Shuffleboard
         sb_driveteamTab = Shuffleboard.getTab("Drive team");

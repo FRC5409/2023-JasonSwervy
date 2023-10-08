@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.kDrive;
 import frc.robot.subsystems.Drivetrain;
 
-public class DefaultDrive extends CommandBase {
+public class SwerveDrive extends CommandBase {
 
     Drivetrain sys_drivetrain;
     CommandXboxController m_controller;
@@ -16,7 +16,7 @@ public class DefaultDrive extends CommandBase {
     SlewRateLimiter m_ySpeedSlewRateLimiter;
     SlewRateLimiter m_manualRotationSlewRateLimiter;
 
-    public DefaultDrive(Drivetrain drivetrain, CommandXboxController controller) {
+    public SwerveDrive(Drivetrain drivetrain, CommandXboxController controller) {
         sys_drivetrain = drivetrain;
         m_controller = controller;
 
