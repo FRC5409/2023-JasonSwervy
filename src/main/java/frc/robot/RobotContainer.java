@@ -64,7 +64,7 @@ public class RobotContainer {
         cmd_swerveDrive = new SwerveDrive(sys_drivetrain, m_primaryController);
         cmd_tankDrive = new TankDrive(sys_drivetrain, m_primaryController);
 
-        sys_drivetrain.setDefaultCommand(new ConditionalCommand(cmd_swerveDrive, cmd_tankDrive, () -> sys_drivetrain.isTank()));
+        sys_drivetrain.setDefaultCommand(new ConditionalCommand(cmd_tankDrive, cmd_swerveDrive, () -> sys_drivetrain.isTank()));
 
         // Shuffleboard
         sb_driveteamTab = Shuffleboard.getTab("Drive team");
