@@ -16,6 +16,8 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.kControllers;
 import frc.robot.commands.SwerveDrive;
 import frc.robot.commands.TankDrive;
+import frc.robot.commands.SwerveFallBacks.CheckTurnMotor;
+import frc.robot.commands.SwerveFallBacks.ToggleIdleMode;
 import frc.robot.commands.auto.FollowTrajectory;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.util.AutoTrajectorySelector;
@@ -90,8 +92,17 @@ public class RobotContainer {
      * joysticks}.
      */
     private void configureBindings() {
-        m_primaryController.a()
-            .onTrue(Commands.runOnce(() -> sys_drivetrain.resetAllEncoders()));
+        m_primaryController.leftBumper()
+            .onTrue(Commands.runOnce(sys_drivetrain::resetAllEncoders));
+
+        m_primaryController.rightBumper()
+            .onTrue(Commands.runOnce(sys_drivetrain::zeroHeading, sys_drivetrain));
+
+        m_primaryController.start()
+            .onTrue(new CheckTurnMotor(sys_drivetrain));
+        
+        m_primaryController.back()
+            .onTrue(new ToggleIdleMode(sys_drivetrain));
     }
 
     private void addShuffleboardItems() {

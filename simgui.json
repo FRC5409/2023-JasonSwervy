@@ -1,0 +1,11 @@
+{
+  "NTProvider": {
+    "types": {
+      "/FMSInfo": "FMSInfo",
+      "/Shuffleboard/Drive team/Choose auto": "String Chooser",
+      "/Shuffleboard/Drive team/Re-zero encoders": "Command",
+      "/Shuffleboard/Drive team/Re-zero gyro": "Command",
+      "/SmartDashboard/Field": "Field2d"
+    }
+  }
+}

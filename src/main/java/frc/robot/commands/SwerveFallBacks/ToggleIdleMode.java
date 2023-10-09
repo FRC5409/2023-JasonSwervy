@@ -18,6 +18,7 @@ public class ToggleIdleMode extends InstantCommand {
     @Override
     public void initialize() {
         m_drive.setBrakeMode(!m_drive.getBrakeMode());
+        System.out.println("Set brake mode to: " + !m_drive.getBrakeMode());
     }
 
 }
