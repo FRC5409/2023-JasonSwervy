@@ -9,7 +9,6 @@ import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
-
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -42,6 +41,7 @@ public class SwerveModule extends SubsystemBase {
     // Location
     private final Location m_location;
 
+    private boolean isStuck = false;
 
     public SwerveModule(int driveMotorID, int turnMotorID,
         int cancoderID, double cancoderAbsoluteOffset,
@@ -135,7 +135,7 @@ public class SwerveModule extends SubsystemBase {
     }
 
     /**
-     * Return the absolute turn encoder position in degrees.
+     * Return the absolute turn encoder position in degrees [0-360].
      * 
      * @return absolute turn encoder position
      */
@@ -213,6 +213,22 @@ public class SwerveModule extends SubsystemBase {
       }
     }
 
+    /**
+     * Sets the turn motor to a specified degree
+     * @param degrees
+     */
+    public void setTurnDegrees(double degrees) {
+        setTurnRadians(Math.toRadians(degrees));
+    }
+
+    /**
+     * Sets the turn motor to a specified radian
+     * @param radians
+     */
+    public void setTurnRadians(double radians) {
+        m_turnPIDController.setReference(radians, ControlType.kPosition);
+    }
+
     public double getTurnEncoderPosition() {
         return enc_turn.getPosition();
     }
@@ -231,12 +247,29 @@ public class SwerveModule extends SubsystemBase {
         }
     }
 
+    public boolean getBrakeMode() {
+        if (mot_drive.getIdleMode() == IdleMode.kBrake) return true;
+        else                                            return false;
+    }
+
+    public CANSparkMax getDriveMot() {
+        return mot_drive;
+    }
+
     public void enableRampRate(boolean enable) {
         mot_drive.setClosedLoopRampRate(enable ? kDrive.kDriveRampRate : 0);
     }
 
     public boolean isRampRateEnabled() {
         return mot_drive.getClosedLoopRampRate() > 0;
+    }
+
+    public void isTurnStuck(boolean stuck) {
+        isStuck = stuck;
+    }
+
+    public boolean isStuck() {
+        return isStuck;
     }
 
     @Override

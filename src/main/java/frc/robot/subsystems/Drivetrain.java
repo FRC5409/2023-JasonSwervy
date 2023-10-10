@@ -2,7 +2,6 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.sensors.Pigeon2.AxisDirection;
 import com.ctre.phoenix.sensors.WPI_Pigeon2;
-
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -12,6 +11,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.kCANID;
 import frc.robot.Constants.kDrive;
+import frc.robot.Constants.kFallBack;
 import frc.robot.Constants.kDrive.Location;
 import frc.robot.Constants.kDrive.kCANCoder;
 import frc.robot.Constants.kRobot;
@@ -51,6 +52,9 @@ public class Drivetrain extends SubsystemBase {
     // Shuffleboard
     private boolean debugMode = true;
     private ShuffleboardTab sb_drivetrainTab;
+
+    private boolean isTank = false;
+    private DifferentialDrive m_diffDrive;
     
 
     public Drivetrain() {
@@ -211,6 +215,15 @@ public class Drivetrain extends SubsystemBase {
         mod_backRight.setBrakeMode(brakeMode);
     }
 
+    public boolean getBrakeMode() {
+        try {
+            return mod_frontLeft.getBrakeMode();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return mod_frontRight.getBrakeMode();
+        }
+    }
+
     /**
      * Stop all motors.
      */
@@ -233,6 +246,37 @@ public class Drivetrain extends SubsystemBase {
             || mod_frontRight.isRampRateEnabled()
             || mod_backLeft.isRampRateEnabled()
             || mod_backRight.isRampRateEnabled();
+    }
+
+    public void isTank(boolean isTank) {
+        this.isTank = isTank;
+
+        mod_frontLeft.getDriveMot().follow(mod_backLeft.getDriveMot());
+        mod_frontRight.getDriveMot().follow(mod_backRight.getDriveMot());
+
+        //Might need to invert idk
+
+        m_diffDrive = new DifferentialDrive(mod_backLeft.getDriveMot(), mod_backRight.getDriveMot());
+        m_diffDrive.setSafetyEnabled(false);
+    }
+
+    public boolean isTank() {
+        return isTank;
+    }
+
+    public void arcadeDrive(double xSpeed, double zRotation) {
+        m_diffDrive.arcadeDrive(xSpeed * kFallBack.maxForwardSpeed, zRotation * kFallBack.maxTurningSpeed);
+    }
+
+    public SwerveModule[] getModules() {
+        SwerveModule[] modules = new SwerveModule[4];
+
+        modules[0] = mod_frontLeft;
+        modules[1] = mod_frontRight;
+        modules[2] = mod_backLeft;
+        modules[3] = mod_backRight;
+
+        return modules;
     }
 
     @Override
