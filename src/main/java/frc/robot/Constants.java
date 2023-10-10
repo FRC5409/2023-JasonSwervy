@@ -118,7 +118,7 @@ public final class Constants {
 
     public static final class kFallBack {
 
-        public static final double turnTolerance                    = Math.toRadians(2);
+        public static final double turnTolerance                    = 2;
 
         public static final double maxForwardSpeed                  = 1;
         public static final double maxTurningSpeed                  = 0.9;

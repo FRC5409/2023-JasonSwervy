@@ -257,6 +257,7 @@ public class Drivetrain extends SubsystemBase {
         //Might need to invert idk
 
         m_diffDrive = new DifferentialDrive(mod_backLeft.getDriveMot(), mod_backRight.getDriveMot());
+        m_diffDrive.setSafetyEnabled(false);
     }
 
     public boolean isTank() {
