@@ -3,10 +3,7 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.subsystems;
-
-import java.lang.invoke.VarHandle;
-
-import javax.naming.spi.DirStateFactory.Result;
+import frc.robot.Constants.kPhotonCamera;
 
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonUtils;
@@ -14,10 +11,8 @@ import org.photonvision.common.hardware.VisionLEDMode;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.kPhotonCamera;
 
 public class PhotonVision extends SubsystemBase {
   private final PhotonCamera photonCamera;  
@@ -33,6 +28,8 @@ public class PhotonVision extends SubsystemBase {
     //retrieving latest data
     result = getLatestResult();
 
+
+    System.out.println("TEsting 123");
     //updating field position if available
     updateFieldLocation();
   }
@@ -42,11 +39,13 @@ public class PhotonVision extends SubsystemBase {
    * updates the robot position in fieldspace if there is an available target with high enough accuracy
    */
   public void updateFieldLocation(){
-    PhotonTrackedTarget bestTarget = result.getBestTarget(); //returns the target of highest quality/accuracy
-    double targetAmbiguity = bestTarget.getPoseAmbiguity();
-
-    if (targetAmbiguity <= kPhotonCamera.kFLAmbiguityThreshold){
-      //TODO update global position
+    if (result.hasTargets()){
+      PhotonTrackedTarget bestTarget = result.getBestTarget(); //returns the target of highest quality/accuracy
+      double targetAmbiguity = bestTarget.getPoseAmbiguity();
+  
+      if (targetAmbiguity <= kPhotonCamera.kFLAmbiguityThreshold){
+        //TODO update global position
+      }
     }
   }
 

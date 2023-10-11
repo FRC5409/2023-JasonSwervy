@@ -20,6 +20,7 @@ import frc.robot.commands.SwerveFallBacks.CheckTurnMotor;
 import frc.robot.commands.SwerveFallBacks.ToggleIdleMode;
 import frc.robot.commands.auto.FollowTrajectory;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.PhotonVision;
 import frc.robot.util.AutoTrajectorySelector;
 
 /**
@@ -39,6 +40,7 @@ public class RobotContainer {
 
     // Subsystems
     public final Drivetrain sys_drivetrain;
+    public final PhotonVision sys_photonVision;
 
     // Commands
     private final SwerveDrive cmd_swerveDrive;
@@ -61,6 +63,7 @@ public class RobotContainer {
 
         // Subsystems
         sys_drivetrain = new Drivetrain();
+        sys_photonVision = new PhotonVision();
 
         // Commands
         cmd_swerveDrive = new SwerveDrive(sys_drivetrain, m_primaryController);
