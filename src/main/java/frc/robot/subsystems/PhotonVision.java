@@ -12,6 +12,7 @@ import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonUtils;
 import org.photonvision.common.hardware.VisionLEDMode;
 import org.photonvision.targeting.PhotonPipelineResult;
+import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.util.Units;
@@ -31,9 +32,26 @@ public class PhotonVision extends SubsystemBase {
   public void periodic() {
     //retrieving latest data
     result = getLatestResult();
+
+    //updating field position if available
+    updateFieldLocation();
   }
 
-  //Get methods
+  //----------UPDATE METHODS----------\\\
+  /**
+   * updates the robot position in fieldspace if there is an available target with high enough accuracy
+   */
+  public void updateFieldLocation(){
+    PhotonTrackedTarget bestTarget = result.getBestTarget(); //returns the target of highest quality/accuracy
+    double targetAmbiguity = bestTarget.getPoseAmbiguity();
+
+    if (targetAmbiguity <= kPhotonCamera.kFLAmbiguityThreshold){
+      //TODO update global position
+    }
+  }
+
+
+  //----------GETTER METHODS----------\\\
   /**
    * Returns the lastest available data from the current photonvision camera.
    * @return latest camera result.
@@ -60,8 +78,15 @@ public class PhotonVision extends SubsystemBase {
     return result.getLatencyMillis();
   }
 
-  //Set methods
-  
+  /**
+   * returns the index of the currently selected pipeline
+   * @return pipeline index
+   */
+  public int getPipeline(){
+    return photonCamera.getPipelineIndex();
+  }
+
+  //----------SETTER METHODS----------\\\
   /**
    * Turns on the camera LEDs
    */

@@ -43,6 +43,7 @@ public final class Constants {
     public static final class kPhotonCamera {
         public static final double kCameraHeight                    = 1;
         public static final double kCameraPitch                     = 10;
+        public static final double kFLAmbiguityThreshold            = 0.5;  
     }
 
     public static final class kRobot {
