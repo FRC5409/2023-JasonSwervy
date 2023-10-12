@@ -144,6 +144,20 @@ public class Drivetrain extends SubsystemBase {
         m_odometry.resetPosition(getRotation2d(), getSwerveModulePositions(), pose);
     }
 
+    public void setTurnDegrees(double degrees) {
+        mod_frontLeft.setTurnDegrees(degrees);
+        mod_frontRight.setTurnDegrees(degrees);
+        mod_backLeft.setTurnDegrees(degrees);
+        mod_backRight.setTurnDegrees(degrees);
+    }
+
+    public void setTurnRadians(double radians) {
+        mod_frontLeft.setTurnRadians(radians);
+        mod_frontRight.setTurnRadians(radians);
+        mod_backLeft.setTurnRadians(radians);
+        mod_backRight.setTurnRadians(radians);
+    }
+
     /**
      * Tele-op drive method
      * 

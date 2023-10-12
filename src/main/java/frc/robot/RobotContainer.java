@@ -33,6 +33,8 @@ import frc.robot.util.AutoTrajectorySelector;
  */
 public class RobotContainer {
 
+    public static boolean testMode = true;
+
     // Joysticks
     private final CommandXboxController m_primaryController;
     private final CommandXboxController m_secondaryController;
@@ -103,6 +105,14 @@ public class RobotContainer {
         
         m_primaryController.back()
             .onTrue(new ToggleIdleMode(sys_drivetrain));
+
+        if (testMode) {
+            
+            // Align wheels straight
+            m_primaryController.x()
+                .whileTrue(Commands.run(() -> sys_drivetrain.setTurnDegrees(0), sys_drivetrain));
+
+        }
     }
 
     private void addShuffleboardItems() {
