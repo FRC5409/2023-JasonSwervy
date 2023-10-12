@@ -83,7 +83,7 @@ public class Drivetrain extends SubsystemBase {
 
         // Robot heading PID
         m_headingController = new PIDController(kDrive.kHeadingP, kDrive.kHeadingI, kDrive.kHeadingD);
-        m_headingController.setTolerance(Math.toRadians(3));
+        m_headingController.setTolerance(Math.toRadians(1));
         m_headingController.enableContinuousInput(0, Math.toRadians(360));
 
         // Shuffleboard

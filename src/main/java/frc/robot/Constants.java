@@ -93,17 +93,17 @@ public final class Constants {
             BottomRight
         }
 
-        public static final double kDriveP                          = 0.04;
+        public static final double kDriveP                          = 0.023092;
         public static final double kDriveI                          = 0;
         public static final double kDriveD                          = 0;
-        public static final double kDriveFF                         = 0.22;
+        public static final double kDriveFF                         = 0.067694;
 
         public static final double kTurnP                           = 3;
         public static final double kTurnI                           = 0;
         public static final double kTurnD                           = 0;
         public static final double kTurnFF                          = 0;
 
-        public static final double kHeadingP                        = 3.3;
+        public static final double kHeadingP                        = 5;
         public static final double kHeadingI                        = 0;
         public static final double kHeadingD                        = 0;
 
