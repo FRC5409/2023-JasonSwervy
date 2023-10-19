@@ -7,6 +7,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.Constants.kAutonomous;
 import frc.robot.Constants.kDrive;
 import frc.robot.subsystems.Drivetrain;
 
@@ -31,13 +32,18 @@ public class FollowTrajectory extends SequentialCommandGroup {
                     sys_drivetrain.resetOdometry(trajectory.getInitialHolonomicPose());
             }),
 
+            // Align wheels straight
+            new InstantCommand(() -> {
+                sys_drivetrain.setTurnDegrees(0);
+            }),
+
             new PPSwerveControllerCommand(
                 trajectory,
                 sys_drivetrain::getPose,
                 sys_drivetrain.getKinematics(),
-                new PIDController(kDrive.kDriveP, kDrive.kDriveI, kDrive.kDriveD), // X controller
-                new PIDController(kDrive.kDriveP, kDrive.kDriveI, kDrive.kDriveD), // Y Controller
-                new PIDController(kDrive.kTurnP, kDrive.kTurnI, kDrive.kTurnD), // Rotation controller
+                new PIDController(kAutonomous.kDriveP, 0, 0), // X controller
+                new PIDController(kAutonomous.kDriveP, 0, 0), // Y Controller
+                new PIDController(kAutonomous.kHeadingP, 0, 0), // Rotation controller
                 sys_drivetrain::setModulesStates,
                 sys_drivetrain // require Drivetrain
             ),

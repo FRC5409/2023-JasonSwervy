@@ -32,7 +32,7 @@ public class AutoTrajectorySelector {
         for (int i = 0; i < kAutonomous.kTrajectories.length; i++) {
 
             String trajectoryFilePath = kAutonomous.kTrajectories[i];
-            PathPlannerTrajectory trajectory = PathPlanner.loadPath(trajectoryFilePath, new PathConstraints(kAutonomous.kMaxDriveVelocity, kAutonomous.kMaxDriveAcceleration));
+            PathPlannerTrajectory trajectory = PathPlanner.loadPath(trajectoryFilePath, new PathConstraints(kAutonomous.kMaxDriveVelocity, kAutonomous.kMaxDriveAcceleration), false);
 
             trajectories[i] = trajectory;
         }
