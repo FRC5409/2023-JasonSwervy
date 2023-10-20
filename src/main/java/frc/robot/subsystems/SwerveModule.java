@@ -9,6 +9,8 @@ import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
+
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -36,6 +38,7 @@ public class SwerveModule extends SubsystemBase {
 
     // PID Controllers
     private final SparkMaxPIDController m_drivePIDController;
+    private final SimpleMotorFeedforward m_driveFF;
     private final SparkMaxPIDController m_turnPIDController;
 
     // Location
@@ -59,6 +62,7 @@ public class SwerveModule extends SubsystemBase {
 
         // PID Controllers
         m_drivePIDController = mot_drive.getPIDController();
+        m_driveFF = new SimpleMotorFeedforward(kDrive.kDriveKs, kDrive.kDriveKv);
         m_turnPIDController = mot_turn.getPIDController();
 
         // Location
@@ -84,7 +88,6 @@ public class SwerveModule extends SubsystemBase {
         m_drivePIDController.setP(kDrive.kDriveP);
         m_drivePIDController.setI(kDrive.kDriveI);
         m_drivePIDController.setD(kDrive.kDriveD);
-        m_drivePIDController.setFF(kDrive.kDriveFF);
 
         mot_turn.restoreFactoryDefaults();
         mot_turn.setInverted(turnMotorInverted);
@@ -188,7 +191,7 @@ public class SwerveModule extends SubsystemBase {
         // SmartDashboard.putNumber(m_location + " Deg", optimizedState.angle.getDegrees());
 
         // Drive output
-        m_drivePIDController.setReference(optimizedState.speedMetersPerSecond, ControlType.kVelocity);
+        m_drivePIDController.setReference(optimizedState.speedMetersPerSecond, ControlType.kVelocity, 0, m_driveFF.calculate(optimizedState.speedMetersPerSecond));
         m_turnPIDController.setReference(optimizedState.angle.getRadians(), ControlType.kPosition);
     }
 
