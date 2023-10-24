@@ -35,9 +35,9 @@ public class FollowTrajectory extends SequentialCommandGroup {
                 trajectory,
                 sys_drivetrain::getPose,
                 sys_drivetrain.getKinematics(),
-                new PIDController(kDrive.kDriveP, kDrive.kDriveI, kDrive.kDriveD), // X controller
-                new PIDController(kDrive.kDriveP, kDrive.kDriveI, kDrive.kDriveD), // Y Controller
-                new PIDController(kDrive.kTurnP, kDrive.kTurnI, kDrive.kTurnD), // Rotation controller
+                new PIDController(0, 0, 0), // X controller
+                new PIDController(0, 0, 0), // Y Controller
+                new PIDController(0, 0, 0), // Rotation controller
                 sys_drivetrain::setModulesStates,
                 sys_drivetrain // require Drivetrain
             ),
