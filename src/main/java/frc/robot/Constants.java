@@ -103,14 +103,14 @@ public final class Constants {
         public static final double kTurnD                           = 0;
         public static final double kTurnFF                          = 0;
 
-        public static final double kHeadingP                        = 3.3;
+        public static final double kHeadingP                        = 3;
         public static final double kHeadingI                        = 0;
         public static final double kHeadingD                        = 0;
 
     }
 
     public static final class kAutonomous {
-        public static final String[] kTrajectories                  = {"Path1", "StraightLine2Meters"}; // all available trajectories from PathPlanner
+        public static final String[] kTrajectories                  = {"Path1"}; // all available trajectories from PathPlanner
 
         public static final double kMaxDriveVelocity                = 1;
         public static final double kMaxDriveAcceleration            = 1;
