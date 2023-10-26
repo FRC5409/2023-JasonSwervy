@@ -170,9 +170,25 @@ public class Drivetrain extends SubsystemBase {
             }
         }
 
+        // DEBUGGING: Monitoring theoretical angle from controller
+        double tempVar = Math.abs(Math.toDegrees(Math.atan2(ySpeed, xSpeed)));
+        if (tempVar > 180) tempVar -= 180;
+        if (tempVar > 90) tempVar -= 90;
+        SmartDashboard.putNumber("Target heading", tempVar);
+
         // Get swerve module desired states
         SwerveModuleState[] swerveModuleStates = m_kinematics.toSwerveModuleStates(
             ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rotation, m_gyro.getRotation2d()));
+
+        // DEBUGGING: Monitoring setpoint angle
+        for (int i = 0; i < swerveModuleStates.length; i++) {
+            double tempVar2 = Math.abs(swerveModuleStates[i].angle.getDegrees());
+            if (tempVar2 > 180) tempVar2 -= 180;
+            if (tempVar2 > 90) tempVar2 -= 90;
+            SmartDashboard.putNumber("Setpoint"+i, tempVar2);
+        }
+        // DEBUGGING: Monitoring gyro
+        SmartDashboard.putNumber("GYRO", m_gyro.getRotation2d().getDegrees());
 
         // for (int i = 0; i < swerveModuleStates.length; i++) {
         //     SmartDashboard.putNumber("Module " + i, swerveModuleStates[i].speedMetersPerSecond);

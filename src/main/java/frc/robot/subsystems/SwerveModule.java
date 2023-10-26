@@ -12,6 +12,8 @@ import com.revrobotics.SparkMaxPIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.kDrive;
 import frc.robot.Constants.kDrive.Location;
@@ -186,6 +188,13 @@ public class SwerveModule extends SubsystemBase {
 
         // SmartDashboard.putNumber(m_location + " Vel", optimizedState.speedMetersPerSecond);
         // SmartDashboard.putNumber(m_location + " Deg", optimizedState.angle.getDegrees());
+
+        // if (m_location == Location.TopLeft) {
+        //     double tempVar = Math.abs(optimizedState.angle.getDegrees());
+        //     if (tempVar > 180) tempVar -= 180;
+        //     if (tempVar > 90) tempVar -= 90;
+        //     SmartDashboard.putNumber("TL", tempVar);
+        // }
 
         // Drive output
         m_drivePIDController.setReference(optimizedState.speedMetersPerSecond, ControlType.kVelocity);
