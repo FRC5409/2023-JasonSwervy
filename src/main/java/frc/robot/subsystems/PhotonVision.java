@@ -5,50 +5,87 @@
 package frc.robot.subsystems;
 import frc.robot.Constants.kPhotonCamera;
 
+import java.io.IOException;
+import java.util.Optional;
+
+import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
+import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonUtils;
+import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.common.hardware.VisionLEDMode;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo.None;
+import com.fasterxml.jackson.databind.introspect.TypeResolutionContext.Empty;
+
+import edu.wpi.first.apriltag.AprilTag;
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class PhotonVision extends SubsystemBase {
   private final PhotonCamera photonCamera;  
   private static PhotonPipelineResult result; 
+  private static AprilTagFieldLayout aprilTagFieldLayout;
+  private static Transform3d cameraPos; 
+  private static PhotonPoseEstimator poseEstimator;
+  private static Optional<EstimatedRobotPose> lastEstimatedPose;
+  //TODO sort objs
 
   public PhotonVision() {
     //Constructor
-    photonCamera = new PhotonCamera("photonvision");
+    photonCamera = new PhotonCamera("OV5647");
+
+    try {
+      aprilTagFieldLayout = AprilTagFields.k2023ChargedUp.loadAprilTagLayoutField();
+    } catch(IOException e) {
+        System.out.println("FAILED TO LOAD JSON");
+    }
+
+    cameraPos = new Transform3d(new Translation3d(kPhotonCamera.kCameraPos.kCameraXOffset, kPhotonCamera.kCameraPos.kCameraYOffset, kPhotonCamera.kCameraPos.kCameraZOffset), new Rotation3d(0, 0, 0)); //TODO add rotation constants
+    poseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.LOWEST_AMBIGUITY, photonCamera, cameraPos);
+    //TODO initialize lastEstmimatedPose with current odometry location
   }
 
   @Override
   public void periodic() {
     //retrieving latest data
-    result = getLatestResult();
-
-
-    System.out.println("TEsting 123");
-    //updating field position if available
-    updateFieldLocation();
+    result = getLatestResult(); 
+    if (result.hasTargets()){
+      System.out.println(result.getBestTarget().getFiducialId());
+      Optional<EstimatedRobotPose> fieldPose = getFieldPosition(); //missing last estimation param
+      if (!fieldPose.isEmpty()){
+        System.out.println(fieldPose.get());
+      } else {
+        System.out.println("OPTIONAL IS EMPTY");
+      }
+    }
   }
 
   //----------UPDATE METHODS----------\\\
   /**
    * updates the robot position in fieldspace if there is an available target with high enough accuracy
    */
-  public void updateFieldLocation(){
+  public Optional<EstimatedRobotPose> getFieldPosition(){
     if (result.hasTargets()){
       PhotonTrackedTarget bestTarget = result.getBestTarget(); //returns the target of highest quality/accuracy
       double targetAmbiguity = bestTarget.getPoseAmbiguity();
-  
+
+      //Updating position only if ambiguity is above threshold
       if (targetAmbiguity <= kPhotonCamera.kFLAmbiguityThreshold){
-        //TODO update global position
+        return poseEstimator.update();
       }
     }
+    return Optional.empty();
   }
-
 
   //----------GETTER METHODS----------\\\
   /**
@@ -66,7 +103,7 @@ public class PhotonVision extends SubsystemBase {
    * @return Distance to target. 
    */
   public double getTargetDistance(double targetHeight){
-    return PhotonUtils.calculateDistanceToTargetMeters(kPhotonCamera.kCameraHeight, targetHeight, kPhotonCamera.kCameraPitch, Units.degreesToRadians(result.getBestTarget().getPitch()));
+    return PhotonUtils.calculateDistanceToTargetMeters(kPhotonCamera.kCameraPos.kCameraZOffset, targetHeight, kPhotonCamera.kCameraPos.kCameraPitch, Units.degreesToRadians(result.getBestTarget().getPitch()));
   }
 
   /**

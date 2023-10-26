@@ -6,6 +6,7 @@ package frc.robot;
 
 import com.pathplanner.lib.PathPlannerTrajectory;
 
+import edu.wpi.first.wpilibj.SynchronousInterrupt;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -39,8 +40,8 @@ public class RobotContainer {
     private final CommandXboxController m_secondaryController;
 
     // Subsystems
-    public final Drivetrain sys_drivetrain;
     public final PhotonVision sys_photonVision;
+    public final Drivetrain sys_drivetrain;
 
     // Commands
     private final SwerveDrive cmd_swerveDrive;

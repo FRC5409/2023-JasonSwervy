@@ -41,9 +41,14 @@ public final class Constants {
     }
 
     public static final class kPhotonCamera {
-        public static final double kCameraHeight                    = 1;
-        public static final double kCameraPitch                     = 10;
+        public static final class kCameraPos {
+            public static final double kCameraPitch                     = 0;
+            public static final double kCameraXOffset                   = 0;
+            public static final double kCameraYOffset                   = 0;
+            public static final double kCameraZOffset                   = 1;
+        }
         public static final double kFLAmbiguityThreshold            = 0.5;  
+        public static final String kFieldLayoutPath                 = "resources/FidicualPose.json";
     }
 
     public static final class kRobot {

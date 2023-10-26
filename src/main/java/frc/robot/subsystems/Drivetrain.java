@@ -1,6 +1,11 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.sensors.Pigeon2.AxisDirection;
+
+import java.util.Optional;
+
+import org.photonvision.EstimatedRobotPose;
+
 import com.ctre.phoenix.sensors.WPI_Pigeon2;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -85,7 +90,7 @@ public class Drivetrain extends SubsystemBase {
         m_headingController = new PIDController(kDrive.kHeadingP, kDrive.kHeadingI, kDrive.kHeadingD);
         m_headingController.setTolerance(Math.toRadians(3));
         m_headingController.enableContinuousInput(0, Math.toRadians(360));
-
+        
         // Shuffleboard
         if (debugMode) {
             sb_drivetrainTab = Shuffleboard.getTab("Drivetrain");
@@ -138,6 +143,18 @@ public class Drivetrain extends SubsystemBase {
 
     public void updateOdometry() {
         m_odometry.update(m_gyro.getRotation2d(), getSwerveModulePositions());
+
+        /*
+        Optional<EstimatedRobotPose> robotPose = sys_PhotonVision.getFieldPosition(getPose());
+        if (robotPose.isEmpty()){
+            m_odometry.update(m_gyro.getRotation2d(), getSwerveModulePositions());
+        } else {
+            Pose2d visionPose = new Pose2d(
+    
+            );
+            
+        }
+        */
     }
 
     public void resetOdometry(Pose2d pose) {
@@ -281,6 +298,7 @@ public class Drivetrain extends SubsystemBase {
 
     @Override
     public void periodic() {
+        //System.out.println("test");
         updateOdometry();
 
         m_field.setRobotPose(m_odometry.getPoseMeters());
