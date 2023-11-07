@@ -16,9 +16,9 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.kControllers;
 import frc.robot.commands.SwerveDrive;
 import frc.robot.commands.TankDrive;
-import frc.robot.commands.SwerveFallBacks.CheckTurnMotor;
-import frc.robot.commands.SwerveFallBacks.ToggleIdleMode;
 import frc.robot.commands.auto.FollowTrajectory;
+import frc.robot.commands.swervefallbacks.CheckTurnMotor;
+import frc.robot.commands.swervefallbacks.ToggleIdleMode;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.util.AutoTrajectorySelector;
 
