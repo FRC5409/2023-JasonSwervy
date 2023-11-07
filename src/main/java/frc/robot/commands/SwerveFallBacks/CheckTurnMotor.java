@@ -37,7 +37,7 @@ public class CheckTurnMotor extends CommandBase {
             
             m_modules[i].setTurnDegrees(desiredPos[i]);
 
-            System.out.println("Turn motor: " + i + " set to: " + desiredPos[i] + " degrees");
+            // System.out.println("Turn motor: " + i + " set to: " + desiredPos[i] + " degrees");
         }
 
         timer.start();
@@ -63,17 +63,19 @@ public class CheckTurnMotor extends CommandBase {
         }
         
         if (num != -1) {
-            double pos = m_modules[num].getAbsoluteTurnEncoderPositionDegrees();
+            // double pos = m_modules[num].getAbsoluteTurnEncoderPositionDegrees();
 
             // System.out.println("Set all motors turning direction to be: " + pos + " degrees");
 
-            for (int i = 0; i < m_modules.length; i++) {
-                if (i == num) continue;
+            // for (int i = 0; i < m_modules.length; i++) {
+            //     if (i == num) continue;
 
-                m_modules[i].setTurnDegrees(pos);
+            //     m_modules[i].setTurnDegrees(pos);
 
-                m_drive.isTank(true);
-            }
+            //     m_drive.isTank(true);
+            // }
+
+            m_modules[num].setBrakeMode(false);
         }
     }
 
