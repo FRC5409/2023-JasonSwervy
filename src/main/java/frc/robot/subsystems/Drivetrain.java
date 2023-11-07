@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.sensors.Pigeon2.AxisDirection;
 import com.ctre.phoenix.sensors.WPI_Pigeon2;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -19,9 +20,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.kCANID;
 import frc.robot.Constants.kDrive;
-import frc.robot.Constants.kFallBack;
 import frc.robot.Constants.kDrive.Location;
 import frc.robot.Constants.kDrive.kCANCoder;
+import frc.robot.Constants.kFallBack;
 import frc.robot.Constants.kRobot;
 
 public class Drivetrain extends SubsystemBase {
@@ -170,9 +171,25 @@ public class Drivetrain extends SubsystemBase {
             }
         }
 
+        // DEBUGGING: Monitoring theoretical angle from controller
+        double tempVar = Math.abs(Math.toDegrees(Math.atan2(ySpeed, xSpeed)));
+        if (tempVar > 180) tempVar -= 180;
+        if (tempVar > 90) tempVar -= 90;
+        SmartDashboard.putNumber("Target heading", tempVar);
+
         // Get swerve module desired states
         SwerveModuleState[] swerveModuleStates = m_kinematics.toSwerveModuleStates(
             ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rotation, m_gyro.getRotation2d()));
+
+        // DEBUGGING: Monitoring setpoint angle
+        for (int i = 0; i < swerveModuleStates.length; i++) {
+            double tempVar2 = Math.abs(swerveModuleStates[i].angle.getDegrees());
+            if (tempVar2 > 180) tempVar2 -= 180;
+            if (tempVar2 > 90) tempVar2 -= 90;
+            SmartDashboard.putNumber("Setpoint"+i, tempVar2);
+        }
+        // DEBUGGING: Monitoring gyro
+        SmartDashboard.putNumber("GYRO", m_gyro.getRotation2d().getDegrees());
 
         // for (int i = 0; i < swerveModuleStates.length; i++) {
         //     SmartDashboard.putNumber("Module " + i, swerveModuleStates[i].speedMetersPerSecond);

@@ -9,6 +9,7 @@ import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -186,6 +187,13 @@ public class SwerveModule extends SubsystemBase {
 
         // SmartDashboard.putNumber(m_location + " Vel", optimizedState.speedMetersPerSecond);
         // SmartDashboard.putNumber(m_location + " Deg", optimizedState.angle.getDegrees());
+
+        // if (m_location == Location.TopLeft) {
+        //     double tempVar = Math.abs(optimizedState.angle.getDegrees());
+        //     if (tempVar > 180) tempVar -= 180;
+        //     if (tempVar > 90) tempVar -= 90;
+        //     SmartDashboard.putNumber("TL", tempVar);
+        // }
 
         // Drive output
         m_drivePIDController.setReference(optimizedState.speedMetersPerSecond, ControlType.kVelocity);
